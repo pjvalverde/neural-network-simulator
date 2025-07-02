@@ -382,6 +382,27 @@
                 </div>
 
                 <div class="control-group">
+                    <label>Pesos Iniciales:</label>
+                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;">
+                        <input type="number" id="weightW1" min="-10" max="10" step="0.1" value="1" title="w1">
+                        <input type="number" id="weightW2" min="-10" max="10" step="0.1" value="0.5" title="w2">
+                        <input type="number" id="weightW3" min="-10" max="10" step="0.1" value="1" title="w3">
+                        <input type="number" id="weightW4" min="-10" max="10" step="0.1" value="-0.5" title="w4">
+                        <input type="number" id="weightW5" min="-10" max="10" step="0.1" value="1" title="w5">
+                        <input type="number" id="weightW6" min="-10" max="10" step="0.1" value="1" title="w6">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Bias Iniciales:</label>
+                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;">
+                        <input type="number" id="biasB1" min="-10" max="10" step="0.1" value="0.5" title="b1">
+                        <input type="number" id="biasB2" min="-10" max="10" step="0.1" value="0" title="b2">
+                        <input type="number" id="biasB3" min="-10" max="10" step="0.1" value="0.5" title="b3">
+                    </div>
+                </div>
+
+                <div class="control-group">
                     <label for="costFunction">Función de Costo:</label>
                     <select id="costFunction">
                         <option value="mse">L = 1/2 (ŷ - y)² (MSE)</option>

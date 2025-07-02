@@ -27,6 +27,19 @@ class SimpleNeuralNetworkApp {
     }
     
     initializeUI() {
+        // Panel de ayuda teórica
+        const helpPanel = document.getElementById('helpPanel');
+        const openHelp = document.getElementById('openHelp');
+        const closeHelp = document.getElementById('closeHelp');
+        if (openHelp && helpPanel && closeHelp) {
+            openHelp.addEventListener('click', () => {
+                helpPanel.style.display = 'block';
+            });
+            closeHelp.addEventListener('click', () => {
+                helpPanel.style.display = 'none';
+            });
+        }
+
         // Referencias a elementos
         this.elements = {
             learningRate: document.getElementById('learningRate'),
@@ -36,6 +49,15 @@ class SimpleNeuralNetworkApp {
             costFunction: document.getElementById('costFunction'),
             targetOutput: document.getElementById('targetOutput'),
             activationFunction: document.getElementById('activationFunction'),
+            weightW1: document.getElementById('weightW1'),
+            weightW2: document.getElementById('weightW2'),
+            weightW3: document.getElementById('weightW3'),
+            weightW4: document.getElementById('weightW4'),
+            weightW5: document.getElementById('weightW5'),
+            weightW6: document.getElementById('weightW6'),
+            biasB1: document.getElementById('biasB1'),
+            biasB2: document.getElementById('biasB2'),
+            biasB3: document.getElementById('biasB3'),
             startTraining: document.getElementById('startTraining'),
             pauseTraining: document.getElementById('pauseTraining'),
             resetNetwork: document.getElementById('resetNetwork'),
@@ -50,12 +72,13 @@ class SimpleNeuralNetworkApp {
         // Event listeners
         this.setupEventListeners();
         
-        // Inicializar entradas y función de costo
+        // Inicializar entradas, función de costo, pesos y bias
         this.network.setInputs([
             parseFloat(this.elements.inputX1.value),
             parseFloat(this.elements.inputX2.value)
         ]);
         this.network.setCostFunction(this.elements.costFunction.value);
+        this.setNetworkWeightsAndBiasesFromInputs();
 
         // Inicializar valores
         this.elements.learningRateValue.textContent = this.elements.learningRate.value;
@@ -92,6 +115,18 @@ class SimpleNeuralNetworkApp {
             this.network.setCostFunction(e.target.value);
             this.network.forwardPass();
             this.updateDisplay();
+        });
+
+        // Pesos y bias iniciales
+        [
+            'weightW1','weightW2','weightW3','weightW4','weightW5','weightW6',
+            'biasB1','biasB2','biasB3'
+        ].forEach(key => {
+            this.elements[key].addEventListener('input', () => {
+                this.setNetworkWeightsAndBiasesFromInputs();
+                this.network.forwardPass();
+                this.updateDisplay();
+            });
         });
 
         // Control de salida objetivo
@@ -247,7 +282,7 @@ class SimpleNeuralNetworkApp {
         calculations.forEach((calc, index) => {
             html += `
                 <div class="calculation-step">
-                    <div class="step-header">📐 ${calc.step}</div>
+                    <div class="step-header"> ${calc.step}</div>
                     <div class="step-formula">${calc.formula}</div>
                     <div class="step-result">${calc.result}</div>
                     ${calc.activation ? `<div class="step-activation">${calc.activation}</div>` : ''}
@@ -263,6 +298,23 @@ class SimpleNeuralNetworkApp {
         this.elements.calculationsDisplay.innerHTML = html;
     }
     
+    setNetworkWeightsAndBiasesFromInputs() {
+        // Actualiza los pesos y bias de la red neuronal desde los campos de la UI
+        this.network.weights = {
+            w1: parseFloat(this.elements.weightW1.value),
+            w2: parseFloat(this.elements.weightW2.value),
+            w3: parseFloat(this.elements.weightW3.value),
+            w4: parseFloat(this.elements.weightW4.value),
+            w5: parseFloat(this.elements.weightW5.value),
+            w6: parseFloat(this.elements.weightW6.value)
+        };
+        this.network.biases = {
+            b1: parseFloat(this.elements.biasB1.value),
+            b2: parseFloat(this.elements.biasB2.value),
+            b3: parseFloat(this.elements.biasB3.value)
+        };
+    }
+
     showMessage(message) {
         // Crear notificación temporal
         const notification = document.createElement('div');
