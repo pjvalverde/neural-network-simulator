@@ -336,6 +336,28 @@
     </style>
 </head>
 <body>
+    <!-- Panel de Ayuda / Teoría -->
+    <div id="helpPanel" class="help-panel" style="display:none;">
+        <button id="closeHelp" style="float:right;font-size:1.2em;">✖️</button>
+        <h2>📚 Teoría de la Red Neuronal</h2>
+        <h3>Funciones de Activación</h3>
+        <ul>
+            <li><b>Sigmoid:</b> <code>σ(x) = 1 / (1 + e<sup>-x</sup>)</code><br>Salida entre 0 y 1. Útil para probabilidades y clasificación binaria.</li>
+            <li><b>Tanh:</b> <code>tanh(x) = (e<sup>x</sup> - e<sup>-x</sup>) / (e<sup>x</sup> + e<sup>-x</sup>)</code><br>Salida entre -1 y 1. Centra los datos, útil en capas ocultas.</li>
+            <li><b>ReLU:</b> <code>ReLU(x) = max(0, x)</code><br>Salida desde 0 hasta infinito. Muy usada en redes profundas.</li>
+        </ul>
+        <h3>Funciones de Costo</h3>
+        <ul>
+            <li><b>MSE (Error Cuadrático Medio):</b> <code>L = ½ (ŷ - y)<sup>2</sup></code><br>Penaliza errores grandes. Muy usada en regresión.</li>
+            <li><b>MAE (Error Absoluto Medio):</b> <code>L = |ŷ - y|</code><br>Penaliza todos los errores de forma lineal. Menos sensible a valores atípicos.</li>
+        </ul>
+        <h4>¿Por qué se usan?</h4>
+        <ul>
+            <li><b>Funciones de activación:</b> Permiten a la red aprender relaciones no lineales. Sin ellas, la red solo suma y multiplica (muy limitado).</li>
+            <li><b>Funciones de costo:</b> Son la "guía" para que la red sepa qué tan bien lo está haciendo y cómo mejorar.</li>
+        </ul>
+    </div>
+    <button id="openHelp" class="btn-info" style="position:fixed;top:20px;right:20px;z-index:2000;">📚 Ayuda/Teoría</button>
     <div class="container">
         <header>
             
