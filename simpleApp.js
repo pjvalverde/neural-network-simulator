@@ -27,10 +27,13 @@ class SimpleNeuralNetworkApp {
     }
     
     initializeUI() {
-        // Referencias a elementos DOM
+        // Referencias a elementos
         this.elements = {
             learningRate: document.getElementById('learningRate'),
             learningRateValue: document.getElementById('learningRateValue'),
+            inputX1: document.getElementById('inputX1'),
+            inputX2: document.getElementById('inputX2'),
+            costFunction: document.getElementById('costFunction'),
             targetOutput: document.getElementById('targetOutput'),
             activationFunction: document.getElementById('activationFunction'),
             startTraining: document.getElementById('startTraining'),
@@ -47,6 +50,13 @@ class SimpleNeuralNetworkApp {
         // Event listeners
         this.setupEventListeners();
         
+        // Inicializar entradas y función de costo
+        this.network.setInputs([
+            parseFloat(this.elements.inputX1.value),
+            parseFloat(this.elements.inputX2.value)
+        ]);
+        this.network.setCostFunction(this.elements.costFunction.value);
+
         // Inicializar valores
         this.elements.learningRateValue.textContent = this.elements.learningRate.value;
         this.network.setLearningRate(parseFloat(this.elements.learningRate.value));
@@ -61,6 +71,29 @@ class SimpleNeuralNetworkApp {
             this.network.setLearningRate(value);
         });
         
+        // Entradas x1 y x2
+        this.elements.inputX1.addEventListener('input', (e) => {
+            const x1 = parseFloat(e.target.value);
+            const x2 = parseFloat(this.elements.inputX2.value);
+            this.network.setInputs([x1, x2]);
+            this.network.forwardPass();
+            this.updateDisplay();
+        });
+        this.elements.inputX2.addEventListener('input', (e) => {
+            const x1 = parseFloat(this.elements.inputX1.value);
+            const x2 = parseFloat(e.target.value);
+            this.network.setInputs([x1, x2]);
+            this.network.forwardPass();
+            this.updateDisplay();
+        });
+
+        // Función de costo
+        this.elements.costFunction.addEventListener('change', (e) => {
+            this.network.setCostFunction(e.target.value);
+            this.network.forwardPass();
+            this.updateDisplay();
+        });
+
         // Control de salida objetivo
         this.elements.targetOutput.addEventListener('input', (e) => {
             const value = parseFloat(e.target.value);

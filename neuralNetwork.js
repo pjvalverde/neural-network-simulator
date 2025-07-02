@@ -31,6 +31,7 @@ class NeuralNetwork {
         this.epoch = 0;
         this.costHistory = [];
         this.isTraining = false;
+        this.costFunction = 'mse'; // 'mse' o 'mae'
         
         // Variables para almacenar valores intermedios
         this.hiddenLayer = [0, 0];
@@ -117,14 +118,23 @@ class NeuralNetwork {
             activation: `output = ${this.activationFunction}(${z3.toFixed(3)}) = ${this.output.toFixed(3)}`
         });
         
-        // Cálculo del error
-        this.error = 0.5 * Math.pow(this.targetOutput - this.output, 2);
-        
-        this.calculations.push({
-            step: 'Función de Costo',
-            formula: `Error = 0.5 × (target - output)²`,
-            result: `Error = 0.5 × (${this.targetOutput} - ${this.output.toFixed(3)})² = ${this.error.toFixed(6)}`
-        });
+        // Cálculo del error según función de costo
+        if (this.costFunction === 'mae') {
+            this.error = Math.abs(this.output - this.targetOutput);
+            this.calculations.push({
+                step: 'Función de Costo',
+                formula: `Error = |ŷ - y|`,
+                result: `Error = |${this.output.toFixed(3)} - ${this.targetOutput}| = ${this.error.toFixed(6)}`
+            });
+        } else {
+            // MSE por defecto
+            this.error = 0.5 * Math.pow(this.targetOutput - this.output, 2);
+            this.calculations.push({
+                step: 'Función de Costo',
+                formula: `Error = 0.5 × (target - output)²`,
+                result: `Error = 0.5 × (${this.targetOutput} - ${this.output.toFixed(3)})² = ${this.error.toFixed(6)}`
+            });
+        }
         
         return this.output;
     }
@@ -273,6 +283,10 @@ class NeuralNetwork {
     
     setInputs(inputs) {
         this.inputs = [...inputs];
+    }
+
+    setCostFunction(func) {
+        this.costFunction = func === 'mae' ? 'mae' : 'mse';
     }
 }
 
