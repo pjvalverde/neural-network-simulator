@@ -33,7 +33,12 @@ class SimpleNeuralNetworkApp {
         const closeHelp = document.getElementById('closeHelp');
         if (openHelp && helpPanel && closeHelp) {
             openHelp.addEventListener('click', () => {
-                helpPanel.style.display = 'block';
+                // Toggle: si está abierto, lo cierra; si está cerrado, lo abre
+                if (helpPanel.style.display === 'block') {
+                    helpPanel.style.display = 'none';
+                } else {
+                    helpPanel.style.display = 'block';
+                }
             });
             closeHelp.addEventListener('click', () => {
                 helpPanel.style.display = 'none';
