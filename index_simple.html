@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulación de Red Neuronal - Gradient Descent</title>
+    <style>
+        /* Reset y configuración base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        header h1 {
+            color: #4a5568;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        header p {
+            color: #718096;
+            font-size: 1.2em;
+        }
+
+        /* Layout principal */
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr 400px;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Panel de control */
+        .control-panel {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            height: fit-content;
+        }
+
+        .control-panel h3 {
+            color: #4a5568;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .control-group input[type="range"] {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        .control-group input[type="number"],
+        .control-group select {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        /* Botones */
+        .button-group {
+            margin: 20px 0;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 8px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #ffecd2, #fcb69f);
+            color: #8b4513;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            color: #8b0000;
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            color: #2d3748;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Estadísticas */
+        .stats {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+        }
+
+        .stats h4 {
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .stat-item span:first-child {
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .stat-item span:last-child {
+            color: #667eea;
+            font-weight: 700;
+        }
+
+        /* Visualización de la red */
+        .network-visualization {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .network-visualization h3 {
+            color: #4a5568;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        #networkCanvas {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: #f7fafc;
+            width: 100%;
+            height: 400px;
+        }
+
+        .network-info {
+            margin-top: 15px;
+        }
+
+        .network-info h4 {
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+
+        .layer-info {
+            margin-bottom: 10px;
+            padding: 8px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .weights-display {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            background: #f7fafc;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Gráfica de costo */
+        .cost-chart {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .cost-chart h3 {
+            color: #4a5568;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        #costCanvas {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: white;
+            width: 100%;
+            height: 300px;
+        }
+
+        /* Panel de cálculos */
+        .calculations-panel {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            margin-top: 20px;
+        }
+
+        .calculations-panel h3 {
+            color: #4a5568;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        #calculationsDisplay {
+            font-family: 'Courier New', monospace;
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .calculation-step {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+        }
+
+        .step-header {
+            font-weight: bold;
+            color: #4a5568;
+            margin-bottom: 5px;
+        }
+
+        .step-formula {
+            color: #2d3748;
+            margin-bottom: 3px;
+        }
+
+        .step-result {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .step-activation {
+            color: #48bb78;
+            font-style: italic;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+            
+            header p {
+                font-size: 1em;
+            }
+        }
+
+        /* Animaciones */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .processing {
+            animation: pulse 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧠 Simulación Interactiva de Red Neuronal</h1>
+            <p>Visualización del Descenso de Gradiente y Función de Costo</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Panel de Control -->
+            <div class="control-panel">
+                <h3>⚙️ Controles</h3>
+                
+                <div class="control-group">
+                    <label for="learningRate">Tasa de Aprendizaje:</label>
+                    <input type="range" id="learningRate" min="0.01" max="1" step="0.01" value="0.1">
+                    <span id="learningRateValue">0.1</span>
+                </div>
+
+                <div class="control-group">
+                    <label for="targetOutput">Salida Objetivo:</label>
+                    <input type="number" id="targetOutput" min="0" max="1" step="0.1" value="0.8">
+                </div>
+
+                <div class="control-group">
+                    <label for="activationFunction">Función de Activación:</label>
+                    <select id="activationFunction">
+                        <option value="sigmoid">Sigmoid</option>
+                        <option value="tanh">Tanh</option>
+                        <option value="relu">ReLU</option>
+                    </select>
+                </div>
+
+                <div class="button-group">
+                    <button id="startTraining" class="btn-primary">🚀 Iniciar Entrenamiento</button>
+                    <button id="pauseTraining" class="btn-secondary">⏸️ Pausar</button>
+                    <button id="resetNetwork" class="btn-danger">🔄 Reiniciar</button>
+                    <button id="stepByStep" class="btn-info">👣 Paso a Paso</button>
+                </div>
+
+                <div class="stats">
+                    <h4>📊 Estadísticas</h4>
+                    <div class="stat-item">
+                        <span>Época:</span>
+                        <span id="epoch">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Error:</span>
+                        <span id="currentError">0.000</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Salida Actual:</span>
+                        <span id="currentOutput">0.000</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visualización de la Red -->
+            <div class="network-visualization">
+                <h3>🔗 Arquitectura de la Red</h3>
+                <canvas id="networkCanvas" width="600" height="400"></canvas>
+                
+                <div class="network-info">
+                    <h4>📋 Información de la Red</h4>
+                    <div class="layer-info">
+                        <strong>Entradas:</strong> [1, 0]
+                    </div>
+                    <div class="weights-display" id="weightsDisplay">
+                        <!-- Los pesos se mostrarán aquí dinámicamente -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfica de Función de Costo -->
+            <div class="cost-chart">
+                <h3>📈 Función de Costo</h3>
+                <canvas id="costCanvas" width="400" height="300"></canvas>
+            </div>
+        </div>
+
+        <!-- Panel de Cálculos Paso a Paso -->
+        <div class="calculations-panel">
+            <h3>🧮 Cálculos Paso a Paso</h3>
+            <div id="calculationsDisplay">
+                <p>Haz clic en "Paso a Paso" para ver los cálculos detallados</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="neuralNetwork.js"></script>
+    <script src="simpleVisualization.js"></script>
+    <script src="simpleApp.js"></script>
+</body>
+</html>
+
