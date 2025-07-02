@@ -274,7 +274,7 @@ class NeuralNetwork {
     }
     
     setTargetOutput(target) {
-        this.targetOutput = Math.max(0, Math.min(1, target));
+        this.targetOutput = Math.max(0, Math.min(5, target));
     }
     
     setActivationFunction(func) {
