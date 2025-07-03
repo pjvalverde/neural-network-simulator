@@ -26,1138 +26,1074 @@ class ActivityApp {
     init() {
         console.log('ActivityApp init iniciado');
         
-        // Cargar elementos de la UI
-        this.loadUIElements();
-        
-        // Configurar event listeners
-        this.setupEventListeners();
-        
-        // Generar datos de entrenamiento
-        this.generateTrainingData();
-        
-        // Inicializar pestañas
-        this.initTabs();
-        
-        // Activar la primera pestaña por defecto
-        this.changeTab('training');
-        
-        console.log('🧠 Aplicación de Actividad de Redes Neuronales inicializada');
+        try {
+            // Cargar elementos de la UI
+            this.loadUIElements();
+            
+            // Configurar event listeners
+            this.setupEventListeners();
+            
+            // Generar datos de entrenamiento
+            this.generateTrainingData();
+            
+            // Inicializar pestañas
+            this.initTabs();
+            
+            console.log('🧠 Aplicación de Actividad de Redes Neuronales inicializada');
+        } catch (error) {
+            console.error('Error al inicializar la aplicación:', error);
+        }
     }
     
     // Cargar referencias a elementos de la UI
     loadUIElements() {
-        // Pestañas
-        this.elements.tabs = document.querySelectorAll('.tab');
-        this.elements.tabContents = document.querySelectorAll('.tab-content');
-        
-        // Configuración del modelo
-        this.elements.architecture = document.getElementById('architecture');
-        this.elements.learningRate = document.getElementById('learning-rate');
-        this.elements.learningRateValue = document.getElementById('learning-rate-value');
-        this.elements.epochs = document.getElementById('epochs');
-        this.elements.activation = document.getElementById('activation');
-        
-        // Botones de control
-        this.elements.trainModelBtn = document.getElementById('train-model');
-        this.elements.saveModelBtn = document.getElementById('save-model');
-        this.elements.resetModelBtn = document.getElementById('reset-model');
-        
-        // Estadísticas
-        this.elements.trainingStatus = document.getElementById('training-status');
-        this.elements.currentEpoch = document.getElementById('current-epoch');
-        this.elements.currentMSE = document.getElementById('current-mse');
-        this.elements.trainingTime = document.getElementById('training-time');
-        
-        // Visualización
-        this.elements.lossChart = document.getElementById('loss-chart');
-        this.elements.networkStructure = document.getElementById('network-structure');
-        this.elements.weightsContainer = document.getElementById('weights-container');
-        this.elements.predictionsContainer = document.getElementById('predictions-container');
-        this.elements.decisionSurface = document.getElementById('decision-surface');
-        
-        // Comparación
-        this.elements.learningRateChart = document.getElementById('learning-rate-chart');
-        this.elements.architectureChart = document.getElementById('architecture-chart');
-        this.elements.modelComparisonTable = document.getElementById('model-comparison-table').querySelector('tbody');
-        this.elements.lrCompare1 = document.getElementById('lr-compare1');
-        this.elements.lrCompare2 = document.getElementById('lr-compare2');
-        this.elements.archCompare1 = document.getElementById('arch-compare1');
-        this.elements.archCompare2 = document.getElementById('arch-compare2');
-        this.elements.compareLRBtn = document.getElementById('compare-lr');
-        this.elements.compareArchBtn = document.getElementById('compare-arch');
-        
-        // Reporte
-        this.elements.studentName = document.getElementById('student-name');
-        this.elements.modelInfo = document.getElementById('model-info');
-        this.elements.criticalAnalysis = document.getElementById('critical-analysis');
-        this.elements.modelFile = document.getElementById('model-file');
-        this.elements.modelFilename = document.getElementById('model-filename');
-        this.elements.generateReportBtn = document.getElementById('generate-report');
-        this.elements.downloadReportBtn = document.getElementById('download-report');
-        this.elements.reportPreview = document.getElementById('report-preview');
-        this.elements.reportContent = document.getElementById('report-content');
+        console.log('Cargando elementos UI');
+        try {
+            // Pestañas
+            this.elements.tabs = document.querySelectorAll('.tab');
+            this.elements.tabContents = document.querySelectorAll('.tab-content');
+            
+            // Configuración del modelo
+            this.elements.architecture = document.getElementById('architecture');
+            this.elements.learningRate = document.getElementById('learning-rate');
+            this.elements.learningRateValue = document.getElementById('learning-rate-value');
+            this.elements.epochs = document.getElementById('epochs');
+            this.elements.activation = document.getElementById('activation');
+            
+            // Botones de control
+            this.elements.trainModelBtn = document.getElementById('train-model');
+            this.elements.saveModelBtn = document.getElementById('save-model');
+            this.elements.resetModelBtn = document.getElementById('reset-model');
+            
+            // Estadísticas
+            this.elements.trainingStatus = document.getElementById('training-status');
+            this.elements.currentEpoch = document.getElementById('current-epoch');
+            this.elements.currentMSE = document.getElementById('current-mse');
+            this.elements.trainingTime = document.getElementById('training-time');
+            
+            // Visualización
+            this.elements.lossChart = document.getElementById('loss-chart');
+            this.elements.networkStructure = document.getElementById('network-structure');
+            this.elements.weightsContainer = document.getElementById('weights-container');
+            this.elements.predictionsContainer = document.getElementById('predictions-container');
+            this.elements.decisionSurface = document.getElementById('decision-surface');
+            
+            // Comparación
+            this.elements.learningRateChart = document.getElementById('learning-rate-chart');
+            this.elements.architectureChart = document.getElementById('architecture-chart');
+            const modelComparisonTable = document.getElementById('model-comparison-table');
+            if (modelComparisonTable) {
+                this.elements.modelComparisonTable = modelComparisonTable.querySelector('tbody');
+            } else {
+                console.warn('No se encontró el elemento model-comparison-table');
+            }
+            this.elements.lrCompare1 = document.getElementById('lr-compare1');
+            this.elements.lrCompare2 = document.getElementById('lr-compare2');
+            this.elements.archCompare1 = document.getElementById('arch-compare1');
+            this.elements.archCompare2 = document.getElementById('arch-compare2');
+            this.elements.compareLRBtn = document.getElementById('compare-lr');
+            this.elements.compareArchBtn = document.getElementById('compare-arch');
+            
+            // Reporte
+            this.elements.studentName = document.getElementById('student-name');
+            this.elements.modelInfo = document.getElementById('model-info');
+            this.elements.criticalAnalysis = document.getElementById('critical-analysis');
+            this.elements.modelFile = document.getElementById('model-file');
+            this.elements.modelFilename = document.getElementById('model-filename');
+            this.elements.generateReportBtn = document.getElementById('generate-report');
+            this.elements.downloadReportBtn = document.getElementById('download-report');
+            this.elements.reportPreview = document.getElementById('report-preview');
+            this.elements.reportContent = document.getElementById('report-content');
+            
+            console.log('Elementos UI cargados correctamente');
+        } catch (error) {
+            console.error('Error al cargar elementos UI:', error);
+        }
     }
     
     // Configurar event listeners
     setupEventListeners() {
-        // Cambiar pestaña
-        this.elements.tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                this.changeTab(tab.dataset.tab);
-            });
-        });
-        
-        // Mostrar valor de la tasa de aprendizaje
-        this.elements.learningRate.addEventListener('input', () => {
-            this.elements.learningRateValue.textContent = this.elements.learningRate.value;
-            this.currentConfig.learningRate = parseFloat(this.elements.learningRate.value);
-        });
-        
-        // Actualizar configuración al cambiar los inputs
-        this.elements.architecture.addEventListener('change', () => {
-            this.currentConfig.architecture = this.elements.architecture.value;
-        });
-        
-        this.elements.epochs.addEventListener('change', () => {
-            this.currentConfig.epochs = parseInt(this.elements.epochs.value);
-        });
-        
-        this.elements.activation.addEventListener('change', () => {
-            this.currentConfig.activation = this.elements.activation.value;
-        });
-        
-        // Botones de control
-        this.elements.trainModelBtn.addEventListener('click', () => this.trainModel());
-        this.elements.saveModelBtn.addEventListener('click', () => this.saveModel());
-        this.elements.resetModelBtn.addEventListener('click', () => this.resetModel());
-        
-        // Botones de comparación
-        this.elements.compareLRBtn.addEventListener('click', () => this.compareLearningRates());
-        this.elements.compareArchBtn.addEventListener('click', () => this.compareArchitectures());
-        
-        // Reporte
-        this.elements.modelFile.addEventListener('change', () => this.handleModelFileUpload());
-        this.elements.generateReportBtn.addEventListener('click', () => this.generateReport());
-        this.elements.downloadReportBtn.addEventListener('click', () => this.downloadReport());
+        console.log('Configurando event listeners');
+        try {
+            // Tabs
+            if (this.elements.tabs) {
+                this.elements.tabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        const tabId = tab.getAttribute('data-tab');
+                        this.changeTab(tabId);
+                    });
+                });
+            }
+            
+            // Configuración del modelo
+            if (this.elements.architecture) {
+                this.elements.architecture.addEventListener('change', () => {
+                    this.currentConfig.architecture = this.elements.architecture.value;
+                    this.createModel();
+                });
+            }
+            
+            if (this.elements.learningRate && this.elements.learningRateValue) {
+                this.elements.learningRate.addEventListener('input', () => {
+                    const value = parseFloat(this.elements.learningRate.value).toFixed(3);
+                    this.elements.learningRateValue.textContent = value;
+                    this.currentConfig.learningRate = parseFloat(value);
+                    if (this.currentModel) {
+                        this.currentModel.config.learningRate = parseFloat(value);
+                    }
+                });
+            }
+            
+            if (this.elements.epochs) {
+                this.elements.epochs.addEventListener('change', () => {
+                    this.currentConfig.epochs = parseInt(this.elements.epochs.value);
+                });
+            }
+            
+            if (this.elements.activation) {
+                this.elements.activation.addEventListener('change', () => {
+                    this.currentConfig.activation = this.elements.activation.value;
+                    this.createModel();
+                });
+            }
+            
+            // Botones de control
+            if (this.elements.trainModelBtn) {
+                this.elements.trainModelBtn.addEventListener('click', () => this.trainModel());
+            }
+            
+            if (this.elements.saveModelBtn) {
+                this.elements.saveModelBtn.addEventListener('click', () => this.saveModel());
+            }
+            
+            if (this.elements.resetModelBtn) {
+                this.elements.resetModelBtn.addEventListener('click', () => this.resetModel());
+            }
+            
+            // Botones de comparación
+            if (this.elements.compareLRBtn) {
+                this.elements.compareLRBtn.addEventListener('click', () => this.compareLearningRates());
+            }
+            
+            if (this.elements.compareArchBtn) {
+                this.elements.compareArchBtn.addEventListener('click', () => this.compareArchitectures());
+            }
+            
+            // Reporte
+            if (this.elements.modelFile) {
+                this.elements.modelFile.addEventListener('change', () => this.handleModelFileUpload());
+            }
+            
+            if (this.elements.generateReportBtn) {
+                this.elements.generateReportBtn.addEventListener('click', () => this.generateReport());
+            }
+            
+            if (this.elements.downloadReportBtn) {
+                this.elements.downloadReportBtn.addEventListener('click', () => this.downloadReport());
+            }
+            
+            console.log('Event listeners configurados correctamente');
+        } catch (error) {
+            console.error('Error al configurar event listeners:', error);
+        }
     }
     
     // Inicializar pestañas
     initTabs() {
-        // Mostrar la primera pestaña por defecto
-        this.changeTab('training');
+        try {
+            console.log('Inicializando pestañas');
+            
+            // Verificar si hay pestañas antes de inicializar
+            if (this.elements.tabs && this.elements.tabs.length > 0) {
+                // Crear modelo inicial
+                this.createModel();
+                
+                // Inicializar gráfico de pérdida
+                this.initLossChart();
+                
+                // Cambiar a la primera pestaña por defecto
+                this.changeTab('training');
+                
+                console.log('Pestañas inicializadas correctamente');
+            } else {
+                console.warn('No se encontraron pestañas para inicializar');
+            }
+        } catch (error) {
+            console.error('Error al inicializar pestañas:', error);
+        }
     }
     
     // Cambiar de pestaña
     changeTab(tabId) {
-        // Ocultar todas las pestañas
-        this.elements.tabs.forEach(tab => tab.classList.remove('active'));
-        this.elements.tabContents.forEach(content => content.classList.remove('active'));
-        
-        // Mostrar la pestaña seleccionada
-        document.querySelector(`.tab[data-tab="${tabId}"]`).classList.add('active');
-        document.querySelector(`.tab-content[data-tab="${tabId}"]`).classList.add('active');
-        
-        // Acciones específicas por pestaña
-        if (tabId === 'visualization' && this.currentModel) {
-            this.updateVisualization();
-        } else if (tabId === 'comparison' && this.trainedModels.length > 0) {
-            this.updateComparison();
+        try {
+            console.log(`Cambiando a pestaña: ${tabId}`);
+            
+            // Ocultar todas las pestañas
+            if (this.elements.tabs && this.elements.tabContents) {
+                this.elements.tabs.forEach(tab => tab.classList.remove('active'));
+                this.elements.tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Mostrar la pestaña seleccionada
+                const selectedTab = document.querySelector(`.tab[data-tab="${tabId}"]`);
+                const selectedContent = document.querySelector(`.tab-content[data-tab="${tabId}"]`);
+                
+                if (selectedTab && selectedContent) {
+                    selectedTab.classList.add('active');
+                    selectedContent.classList.add('active');
+                    
+                    // Acciones específicas por pestaña
+                    if (tabId === 'visualization' && this.currentModel) {
+                        this.updateVisualization();
+                    } else if (tabId === 'comparison' && this.savedModels && this.savedModels.length > 0) {
+                        this.updateComparisonTable();
+                    }
+                    
+                    console.log(`Pestaña ${tabId} activada`);
+                } else {
+                    console.error(`No se encontró la pestaña ${tabId}`);
+                }
+            } else {
+                console.error('No se encontraron elementos de pestañas');
+            }
+        } catch (error) {
+            console.error(`Error al cambiar a la pestaña ${tabId}:`, error);
         }
     }
     
     // Generar datos de entrenamiento
     generateTrainingData() {
-        console.log('Generando datos de entrenamiento...');
-        this.trainingData = generateLogicDataset(100, 0.05, Date.now());
-        console.log('Datos generados:', 
-            'X:', this.trainingData.X.map(row => row.length).join('×'),
-            'Y:', this.trainingData.Y.map(row => row.length).join('×'));
+        try {
+            console.log('Generando datos de entrenamiento...');
+            this.trainingData = generateLogicDataset(100, 0.05, Date.now());
+            console.log('Datos generados:', 
+                'X:', this.trainingData.X.map(row => row.length).join('×'),
+                'Y:', this.trainingData.Y.map(row => row.length).join('×'));
+        } catch (error) {
+            console.error('Error al generar datos de entrenamiento:', error);
+        }
     }
     
     // Crear modelo según la configuración actual
     createModel() {
-        const arch = this.currentConfig.architecture.split('-').map(n => parseInt(n));
-        
-        // Validar arquitectura
-        if (arch.length < 3) {
-            console.error('Arquitectura inválida:', this.currentConfig.architecture);
+        try {
+            console.log('Creando modelo con configuración:', this.currentConfig);
+            
+            const arch = this.currentConfig.architecture.split('-').map(n => parseInt(n));
+            
+            // Validar arquitectura
+            if (arch.length < 3) {
+                console.error('Arquitectura inválida:', this.currentConfig.architecture);
+                return null;
+            }
+            
+            // Crear y configurar el modelo
+            this.currentModel = new VectorNN({
+                inputDim: arch[0],
+                hiddenDims: arch.slice(1, -1),
+                outputDim: arch[arch.length - 1],
+                activation: this.currentConfig.activation,
+                learningRate: this.currentConfig.learningRate,
+                seed: Date.now()
+            });
+            
+            console.log('Modelo creado:', this.currentModel);
+            
+            // Actualizar visualizaciones
+            this.updateNetworkStructure();
+            
+            return this.currentModel;
+        } catch (error) {
+            console.error('Error al crear el modelo:', error);
             return null;
         }
-        
-        const config = {
-            inputDim: arch[0],
-            hiddenDims: arch.slice(1, -1),  // Todo menos el primero y último
-            outputDim: arch[arch.length - 1],
-            learningRate: this.currentConfig.learningRate,
-            activation: this.currentConfig.activation,
-            seed: Date.now()
-        };
-        
-        console.log('Creando modelo con configuración:', config);
-        return new VectorNN(config);
     }
     
     // Entrenar el modelo
     async trainModel() {
-        // Deshabilitar botones durante entrenamiento
-        this.elements.trainModelBtn.disabled = true;
-        this.elements.trainModelBtn.textContent = 'Entrenando...';
-        this.elements.trainingStatus.textContent = 'En progreso';
-        
         try {
-            // Crear modelo
-            this.currentModel = this.createModel();
-            if (!this.currentModel) {
-                throw new Error('No se pudo crear el modelo');
+            if (!this.currentModel || !this.trainingData) {
+                console.error('No hay modelo o datos de entrenamiento disponibles');
+                return;
             }
             
-            // Mostrar estructura de la red
-            this.updateNetworkStructure();
+            if (this.trainingInProgress) {
+                console.log('Ya hay un entrenamiento en curso');
+                return;
+            }
             
-            // Inicializar gráfico de pérdida
-            this.initLossChart();
+            // Deshabilitar botones durante entrenamiento
+            if (this.elements.trainModelBtn) this.elements.trainModelBtn.disabled = true;
+            if (this.elements.trainModelBtn) this.elements.trainModelBtn.textContent = 'Entrenando...';
+            if (this.elements.resetModelBtn) this.elements.resetModelBtn.disabled = true;
             
-            // Para mostrar progreso en tiempo real
+            this.trainingInProgress = true;
+            this.epochCounter = 0;
+            
+            // Iniciar temporizador
+            const startTime = performance.now();
+            if (this.elements.trainingStatus) this.elements.trainingStatus.textContent = 'Entrenando...';
+            
+            // Entrenamiento por lotes para permitir actualización de UI
+            const batchSize = Math.min(50, this.currentConfig.epochs);
             const totalEpochs = this.currentConfig.epochs;
-            const batchSize = Math.min(50, Math.ceil(totalEpochs / 20)); // 20 actualizaciones como máximo
             
-            console.log(`Iniciando entrenamiento: ${totalEpochs} épocas en batches de ${batchSize}`);
-            
-            let currentEpoch = 0;
-            const trainStartTime = performance.now();
-            
-            // Entrenar en batches para mantener la UI actualizada
-            while (currentEpoch < totalEpochs) {
-                const batchEpochs = Math.min(batchSize, totalEpochs - currentEpoch);
+            for (let i = 0; i < totalEpochs; i += batchSize) {
+                if (!this.trainingInProgress) break;
+                
+                const currentBatch = Math.min(batchSize, totalEpochs - i);
                 
                 // Entrenar batch
-                for (let i = 0; i < batchEpochs; i++) {
-                    const loss = this.currentModel.trainStep(this.trainingData.X, this.trainingData.Y);
-                    currentEpoch++;
-                    
-                    // Actualizar UI cada 10 épocas o en la última
-                    if (i % 10 === 0 || i === batchEpochs - 1) {
-                        this.elements.currentEpoch.textContent = `${currentEpoch}/${totalEpochs}`;
-                        this.elements.currentMSE.textContent = loss.toFixed(6);
-                    }
-                }
+                await new Promise(resolve => {
+                    setTimeout(() => {
+                        for (let j = 0; j < currentBatch; j++) {
+                            this.currentModel.trainStep(this.trainingData.X, this.trainingData.Y);
+                            this.epochCounter++;
+                        }
+                        resolve();
+                    }, 0);
+                });
+                
+                // Actualizar UI
+                const currentLoss = this.currentModel.lossHistory[this.currentModel.lossHistory.length - 1];
+                if (this.elements.currentEpoch) this.elements.currentEpoch.textContent = this.epochCounter;
+                if (this.elements.currentMSE) this.elements.currentMSE.textContent = currentLoss.toFixed(6);
                 
                 // Actualizar gráfico de pérdida
                 this.updateLossChart();
                 
-                // Dar tiempo a la UI para actualizarse
-                await new Promise(resolve => setTimeout(resolve, 0));
+                // Permitir que el navegador actualice la UI
+                await new Promise(resolve => setTimeout(resolve, 10));
             }
             
-            const trainEndTime = performance.now();
-            const trainingTime = (trainEndTime - trainStartTime) / 1000; // segundos
+            // Finalizar entrenamiento
+            const endTime = performance.now();
+            const trainingTime = ((endTime - startTime) / 1000).toFixed(2);
             
-            // Actualizar estadísticas finales
-            this.elements.trainingStatus.textContent = 'Completado';
-            this.elements.trainingTime.textContent = `${trainingTime.toFixed(2)}s`;
+            if (this.elements.trainingStatus) this.elements.trainingStatus.textContent = 'Entrenamiento completado';
+            if (this.elements.trainingTime) this.elements.trainingTime.textContent = `${trainingTime} s`;
             
-            // Guardar modelo en la lista de comparación
-            this.addModelToComparison(this.currentModel, trainingTime);
+            // Rehabilitar botones
+            if (this.elements.trainModelBtn) this.elements.trainModelBtn.disabled = false;
+            if (this.elements.trainModelBtn) this.elements.trainModelBtn.textContent = 'Entrenar Modelo';
+            if (this.elements.resetModelBtn) this.elements.resetModelBtn.disabled = false;
+            if (this.elements.saveModelBtn) this.elements.saveModelBtn.disabled = false;
             
-            // Activar visualización
+            // Actualizar visualizaciones
             this.updateVisualization();
             
-            console.log('Entrenamiento completado:', 
-                `${totalEpochs} épocas en ${trainingTime.toFixed(2)}s, ` +
-                `Loss final: ${this.currentModel.lossHistory[this.currentModel.lossHistory.length - 1].toFixed(6)}`);
+            // Añadir a comparación
+            this.addModelToComparison(this.currentModel, trainingTime);
             
+            this.trainingInProgress = false;
+            console.log('Entrenamiento completado en', trainingTime, 's');
         } catch (error) {
             console.error('Error durante el entrenamiento:', error);
-            this.elements.trainingStatus.textContent = 'Error';
-        } finally {
-            // Re-habilitar botones
-            this.elements.trainModelBtn.disabled = false;
-            this.elements.trainModelBtn.textContent = 'Entrenar modelo';
+            this.trainingInProgress = false;
+            if (this.elements.trainModelBtn) this.elements.trainModelBtn.disabled = false;
+            if (this.elements.trainModelBtn) this.elements.trainModelBtn.textContent = 'Entrenar Modelo';
+            if (this.elements.resetModelBtn) this.elements.resetModelBtn.disabled = false;
+            if (this.elements.trainingStatus) this.elements.trainingStatus.textContent = 'Error en el entrenamiento';
         }
     }
     
     // Reiniciar modelo
     resetModel() {
-        // Limpiar modelo actual
-        this.currentModel = null;
-        
-        // Reiniciar UI
-        this.elements.trainingStatus.textContent = 'No iniciado';
-        this.elements.currentEpoch.textContent = '0/0';
-        this.elements.currentMSE.textContent = '0';
-        this.elements.trainingTime.textContent = '0s';
-        
-        // Regenerar datos
-        this.generateTrainingData();
-        
-        console.log('Modelo reiniciado');
+        try {
+            if (this.trainingInProgress) {
+                // Detener entrenamiento en curso
+                this.trainingInProgress = false;
+            }
+            
+            // Crear nuevo modelo con la configuración actual
+            this.createModel();
+            
+            // Reiniciar UI
+            if (this.elements.currentEpoch) this.elements.currentEpoch.textContent = '0';
+            if (this.elements.currentMSE) this.elements.currentMSE.textContent = '-';
+            if (this.elements.trainingStatus) this.elements.trainingStatus.textContent = 'No entrenado';
+            if (this.elements.trainingTime) this.elements.trainingTime.textContent = '-';
+            
+            // Habilitar/deshabilitar botones según corresponda
+            if (this.elements.trainModelBtn) this.elements.trainModelBtn.disabled = false;
+            if (this.elements.trainModelBtn) this.elements.trainModelBtn.textContent = 'Entrenar Modelo';
+            if (this.elements.resetModelBtn) this.elements.resetModelBtn.disabled = false;
+            if (this.elements.saveModelBtn) this.elements.saveModelBtn.disabled = true;
+            
+            // Reiniciar gráfico
+            this.initLossChart();
+            
+            console.log('Modelo reiniciado');
+        } catch (error) {
+            console.error('Error al reiniciar el modelo:', error);
+        }
+    }
+    
+    // Inicializar gráfico de pérdida
+    initLossChart() {
+        try {
+            if (this.charts.lossChart) {
+                this.charts.lossChart.destroy();
+            }
+            
+            if (!this.elements.lossChart) {
+                console.warn('No se encontró el elemento lossChart');
+                return;
+            }
+            
+            const ctx = this.elements.lossChart.getContext('2d');
+            if (!ctx) {
+                console.warn('No se pudo obtener el contexto 2D del canvas');
+                return;
+            }
+            
+            this.charts.lossChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Error (MSE)',
+                        data: [],
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    animation: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Error Cuadrático Medio (MSE)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Época'
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Evolución del Error Durante el Entrenamiento'
+                        }
+                    }
+                }
+            });
+            
+            console.log('Gráfico de pérdida inicializado');
+        } catch (error) {
+            console.error('Error al inicializar el gráfico de pérdida:', error);
+        }
+    }
+    
+    // Actualizar gráfico de pérdida
+    updateLossChart() {
+        try {
+            if (!this.currentModel || !this.charts.lossChart) return;
+            
+            const chart = this.charts.lossChart;
+            const lossHistory = this.currentModel.lossHistory;
+            
+            // Crear etiquetas para cada época
+            const labels = Array.from({ length: lossHistory.length }, (_, i) => i + 1);
+            
+            // Actualizar datos del gráfico
+            chart.data.labels = labels;
+            chart.data.datasets[0].data = lossHistory;
+            
+            // Si hay demasiados puntos, mostrar solo una muestra
+            if (lossHistory.length > 100) {
+                const step = Math.floor(lossHistory.length / 100);
+                chart.data.labels = labels.filter((_, i) => i % step === 0);
+                chart.data.datasets[0].data = lossHistory.filter((_, i) => i % step === 0);
+            }
+            
+            chart.update();
+        } catch (error) {
+            console.error('Error al actualizar el gráfico de pérdida:', error);
+        }
     }
     
     // Guardar modelo actual
     saveModel() {
-        if (!this.currentModel) {
-            alert('No hay modelo para guardar. Entrena un modelo primero.');
-            return;
-        }
-        
         try {
-            // Serializar modelo
-            const modelData = this.currentModel.toJSON();
-            const modelJson = JSON.stringify(modelData);
+            if (!this.currentModel) {
+                alert('No hay modelo para guardar');
+                return;
+            }
             
-            // Crear URL para descarga
-            const blob = new Blob([modelJson], { type: 'application/json' });
+            const modelConfig = {
+                architecture: this.currentConfig.architecture,
+                activation: this.currentConfig.activation,
+                learningRate: this.currentConfig.learningRate,
+                epochs: this.epochCounter,
+                timestamp: new Date().toISOString(),
+                loss: this.currentModel.lossHistory[this.currentModel.lossHistory.length - 1]
+            };
+            
+            // Serializar modelo
+            const modelJSON = this.currentModel.toJSON();
+            const modelData = JSON.stringify({
+                config: modelConfig,
+                model: modelJSON
+            });
+            
+            // Crear blob y link para descarga
+            const blob = new Blob([modelData], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             
-            // Crear link y disparar descarga
+            const filename = `modelo_${modelConfig.architecture}_${modelConfig.activation}_${new Date().toISOString().slice(0, 10)}.json`;
+            
             const link = document.createElement('a');
             link.href = url;
-            link.download = `model_${this.currentConfig.architecture}_lr${this.currentConfig.learningRate}.json`;
+            link.download = filename;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             
-            console.log('Modelo guardado correctamente');
+            console.log('Modelo guardado:', filename);
         } catch (error) {
-            console.error('Error guardando modelo:', error);
-            alert('Error al guardar el modelo: ' + error.message);
+            console.error('Error al guardar el modelo:', error);
+            alert('Error al guardar el modelo');
         }
     }
     
     // Añadir modelo a la lista de comparación
     addModelToComparison(model, trainingTime) {
-        const modelInfo = {
-            id: this.trainedModels.length + 1,
-            architecture: this.currentConfig.architecture,
-            learningRate: this.currentConfig.learningRate,
-            activation: this.currentConfig.activation,
-            epochs: this.currentConfig.epochs,
-            finalLoss: model.lossHistory[model.lossHistory.length - 1],
-            trainingTime: trainingTime,
-            lossHistory: [...model.lossHistory],
-            model: model
-        };
-        
-        this.trainedModels.push(modelInfo);
-        
-        // Actualizar tabla de comparación
-        this.updateComparisonTable();
-        
-        // Actualizar selects de comparación
-        this.updateComparisonSelects();
-        
-        console.log('Modelo añadido a la comparación:', modelInfo);
-    }
-    
-    // Inicializar gráfico de pérdida
-    initLossChart() {
-        // Destruir gráfico anterior si existe
-        if (this.charts.lossChart) {
-            this.charts.lossChart.destroy();
-        }
-        
-        // Crear nuevo gráfico
-        const ctx = this.elements.lossChart.getContext('2d');
-        this.charts.lossChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'Pérdida (MSE)',
-                    data: [],
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderWidth: 2,
-                    tension: 0.1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Error Cuadrático Medio (MSE)'
-                        }
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Épocas'
-                        }
-                    }
-                },
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Curva de Aprendizaje'
-                    }
-                }
-            }
-        });
-    }
-    
-    // Actualizar gráfico de pérdida
-    updateLossChart() {
-        if (!this.currentModel || !this.charts.lossChart) return;
-        
-        const lossHistory = this.currentModel.lossHistory;
-        const labels = Array.from({length: lossHistory.length}, (_, i) => i + 1);
-        
-        // Limitar puntos en el gráfico para evitar sobrecarga
-        const maxPoints = 100;
-        let step = 1;
-        
-        if (lossHistory.length > maxPoints) {
-            step = Math.floor(lossHistory.length / maxPoints);
-        }
-        
-        const filteredLabels = [];
-        const filteredLoss = [];
-        
-        for (let i = 0; i < lossHistory.length; i += step) {
-            filteredLabels.push(labels[i]);
-            filteredLoss.push(lossHistory[i]);
-        }
-        
-        // Asegurarse de incluir el último punto
-        if (filteredLabels[filteredLabels.length - 1] !== labels[labels.length - 1]) {
-            filteredLabels.push(labels[labels.length - 1]);
-            filteredLoss.push(lossHistory[lossHistory.length - 1]);
-        }
-        
-        this.charts.lossChart.data.labels = filteredLabels;
-        this.charts.lossChart.data.datasets[0].data = filteredLoss;
-        this.charts.lossChart.update();
-    }
-    
-    // Mostrar estructura de la red
-    updateNetworkStructure() {
-        if (!this.currentModel) return;
-        
-        const container = this.elements.networkStructure;
-        container.innerHTML = '';
-        
-        // Obtener dimensiones de cada capa
-        const inputDim = this.currentModel.config.inputDim;
-        const hiddenDims = this.currentModel.config.hiddenDims;
-        const outputDim = this.currentModel.config.outputDim;
-        
-        const allLayers = [inputDim, ...hiddenDims, outputDim];
-        const maxNeurons = Math.max(...allLayers);
-        
-        // Crear contenedor para la red
-        const networkDiv = document.createElement('div');
-        networkDiv.className = 'network-structure';
-        
-        // Crear cada capa
-        for (let l = 0; l < allLayers.length; l++) {
-            const layerDiv = document.createElement('div');
-            layerDiv.className = 'layer';
+        try {
+            if (!model) return;
             
-            // Etiqueta de la capa
-            const layerLabel = document.createElement('div');
-            layerLabel.className = 'layer-label';
-            layerLabel.textContent = l === 0 ? 'Entrada' : 
-                                    l === allLayers.length - 1 ? 'Salida' : 
-                                    `Oculta ${l}`;
-            layerDiv.appendChild(layerLabel);
+            const modelConfig = {
+                id: Date.now().toString(),
+                architecture: this.currentConfig.architecture,
+                activation: this.currentConfig.activation,
+                learningRate: this.currentConfig.learningRate,
+                epochs: this.epochCounter,
+                loss: model.lossHistory[model.lossHistory.length - 1],
+                trainingTime: trainingTime,
+                model: model
+            };
             
-            // Crear neuronas
-            const neurons = allLayers[l];
-            for (let n = 0; n < neurons; n++) {
-                const neuronDiv = document.createElement('div');
-                neuronDiv.className = 'neuron';
-                
-                // Color según la capa
-                if (l === 0) {
-                    neuronDiv.classList.add('input-neuron');
-                } else if (l === allLayers.length - 1) {
-                    neuronDiv.classList.add('output-neuron');
-                } else {
-                    neuronDiv.classList.add('hidden-neuron');
-                }
-                
-                layerDiv.appendChild(neuronDiv);
-            }
+            // Guardar modelo
+            if (!this.savedModels) this.savedModels = [];
+            this.savedModels.push(modelConfig);
             
-            networkDiv.appendChild(layerDiv);
+            // Actualizar tabla de comparación si estamos en esa pestaña
+            this.updateComparisonTable();
             
-            // Añadir conexiones entre capas
-            if (l < allLayers.length - 1) {
-                const connectionsDiv = document.createElement('div');
-                connectionsDiv.className = 'connections';
-                networkDiv.appendChild(connectionsDiv);
-            }
+            console.log('Modelo añadido a la comparación:', modelConfig);
+        } catch (error) {
+            console.error('Error al añadir modelo a la comparación:', error);
         }
-        
-        container.appendChild(networkDiv);
-        
-        // Mostrar info de la arquitectura
-        const infoDiv = document.createElement('div');
-        infoDiv.className = 'network-info';
-        infoDiv.innerHTML = `<strong>Arquitectura:</strong> ${this.currentConfig.architecture}<br>
-                          <strong>Activación:</strong> ${this.currentConfig.activation}<br>
-                          <strong>Tasa de aprendizaje:</strong> ${this.currentConfig.learningRate}`;
-        container.appendChild(infoDiv);
     }
     
     // Actualizar tabla de comparación de modelos
     updateComparisonTable() {
-        if (this.trainedModels.length === 0) return;
-        
-        const table = this.elements.modelComparisonTable;
-        table.innerHTML = '';
-        
-        // Ordenar modelos por pérdida final (menor a mayor)
-        const sortedModels = [...this.trainedModels].sort((a, b) => a.finalLoss - b.finalLoss);
-        
-        // Añadir filas a la tabla
-        for (const model of sortedModels) {
-            const row = document.createElement('tr');
+        try {
+            if (!this.elements.modelComparisonTable || !this.savedModels || this.savedModels.length === 0) return;
             
-            // Añadir celdas con la información del modelo
-            row.innerHTML = `
-                <td>${model.id}</td>
-                <td>${model.architecture}</td>
-                <td>${model.activation}</td>
-                <td>${model.learningRate}</td>
-                <td>${model.epochs}</td>
-                <td>${model.finalLoss.toFixed(6)}</td>
-                <td>${model.trainingTime.toFixed(2)}s</td>
-                <td><button class="btn-action select-model" data-id="${model.id}">Seleccionar</button></td>
-            `;
+            const tbody = this.elements.modelComparisonTable;
+            tbody.innerHTML = ''; // Limpiar tabla
             
-            table.appendChild(row);
-        }
-        
-        // Añadir event listeners a los botones de seleccionar
-        const selectButtons = table.querySelectorAll('.select-model');
-        selectButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const modelId = parseInt(button.dataset.id);
-                this.selectModelFromComparison(modelId);
-            });
-        });
-    }
-    
-    // Seleccionar un modelo de la tabla de comparación
-    selectModelFromComparison(modelId) {
-        const model = this.trainedModels.find(m => m.id === modelId);
-        if (!model) return;
-        
-        this.currentModel = model.model;
-        this.currentConfig = {
-            architecture: model.architecture,
-            learningRate: model.learningRate,
-            epochs: model.epochs,
-            activation: model.activation
-        };
-        
-        // Actualizar UI
-        this.elements.architecture.value = model.architecture;
-        this.elements.learningRate.value = model.learningRate;
-        this.elements.learningRateValue.textContent = model.learningRate;
-        this.elements.epochs.value = model.epochs;
-        this.elements.activation.value = model.activation;
-        
-        // Actualizar estadísticas
-        this.elements.trainingStatus.textContent = 'Completado';
-        this.elements.currentEpoch.textContent = `${model.epochs}/${model.epochs}`;
-        this.elements.currentMSE.textContent = model.finalLoss.toFixed(6);
-        this.elements.trainingTime.textContent = `${model.trainingTime.toFixed(2)}s`;
-        
-        // Actualizar visualizaciones
-        this.updateNetworkStructure();
-        this.initLossChart();
-        this.updateLossChart();
-        
-        // Cambiar a la pestaña de entrenamiento
-        this.changeTab('training');
-        
-        console.log(`Modelo #${modelId} seleccionado de la comparación`);
-    }
-    
-    // Actualizar selects de comparación
-    updateComparisonSelects() {
-        // Obtener referencias a los selects
-        const selects = [
-            this.elements.lrCompare1,
-            this.elements.lrCompare2,
-            this.elements.archCompare1,
-            this.elements.archCompare2
-        ];
-        
-        // Limpiar opciones
-        selects.forEach(select => {
-            select.innerHTML = '<option value="">Seleccionar modelo</option>';
-        });
-        
-        // Añadir opciones para cada modelo
-        for (const model of this.trainedModels) {
-            const option = document.createElement('option');
-            option.value = model.id;
-            option.textContent = `#${model.id}: ${model.architecture}, LR=${model.learningRate}`;
-            
-            selects.forEach(select => {
-                select.appendChild(option.cloneNode(true));
-            });
-        }
-    }
-    
-    // Comparar modelos por tasa de aprendizaje
-    compareLearningRates() {
-        const id1 = parseInt(this.elements.lrCompare1.value);
-        const id2 = parseInt(this.elements.lrCompare2.value);
-        
-        if (isNaN(id1) || isNaN(id2) || id1 === id2) {
-            alert('Selecciona dos modelos diferentes para comparar');
-            return;
-        }
-        
-        const model1 = this.trainedModels.find(m => m.id === id1);
-        const model2 = this.trainedModels.find(m => m.id === id2);
-        
-        if (!model1 || !model2) return;
-        
-        // Crear gráfico de comparación
-        if (this.charts.lrComparisonChart) {
-            this.charts.lrComparisonChart.destroy();
-        }
-        
-        const ctx = this.elements.learningRateChart.getContext('2d');
-        this.charts.lrComparisonChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: Array.from({length: Math.max(model1.lossHistory.length, model2.lossHistory.length)}, (_, i) => i + 1),
-                datasets: [
-                    {
-                        label: `LR=${model1.learningRate}`,
-                        data: model1.lossHistory,
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderWidth: 2,
-                    },
-                    {
-                        label: `LR=${model2.learningRate}`,
-                        data: model2.lossHistory,
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderWidth: 2,
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'MSE'
-                        },
-                        type: 'logarithmic'
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Épocas'
-                        }
-                    }
-                },
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Comparación de Tasas de Aprendizaje'
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return `${context.dataset.label}: ${context.parsed.y.toFixed(6)}`;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    }
-    
-    // Comparar modelos por arquitectura
-    compareArchitectures() {
-        const id1 = parseInt(this.elements.archCompare1.value);
-        const id2 = parseInt(this.elements.archCompare2.value);
-        
-        if (isNaN(id1) || isNaN(id2) || id1 === id2) {
-            alert('Selecciona dos modelos diferentes para comparar');
-            return;
-        }
-        
-        const model1 = this.trainedModels.find(m => m.id === id1);
-        const model2 = this.trainedModels.find(m => m.id === id2);
-        
-        if (!model1 || !model2) return;
-        
-        // Crear gráfico de comparación
-        if (this.charts.archComparisonChart) {
-            this.charts.archComparisonChart.destroy();
-        }
-        
-        const ctx = this.elements.architectureChart.getContext('2d');
-        this.charts.archComparisonChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: Array.from({length: Math.max(model1.lossHistory.length, model2.lossHistory.length)}, (_, i) => i + 1),
-                datasets: [
-                    {
-                        label: `${model1.architecture}`,
-                        data: model1.lossHistory,
-                        borderColor: 'rgba(153, 102, 255, 1)',
-                        backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                        borderWidth: 2,
-                    },
-                    {
-                        label: `${model2.architecture}`,
-                        data: model2.lossHistory,
-                        borderColor: 'rgba(255, 159, 64, 1)',
-                        backgroundColor: 'rgba(255, 159, 64, 0.2)',
-                        borderWidth: 2,
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'MSE'
-                        },
-                        type: 'logarithmic'
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Épocas'
-                        }
-                    }
-                },
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Comparación de Arquitecturas'
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return `${context.dataset.label}: ${context.parsed.y.toFixed(6)}`;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    }
-    
-    // Actualizar todas las visualizaciones
-    updateVisualization() {
-        if (!this.currentModel) return;
-        
-        // Mostrar estructura de la red
-        this.updateNetworkStructure();
-        
-        // Mostrar pesos y bias
-        this.updateWeightsTable();
-        
-        // Mostrar predicciones para datos ejemplo
-        this.updatePredictionsTable();
-        
-        // Visualizar superficie de decisión
-        this.drawDecisionSurface();
-    }
-    
-    // Actualizar tabla de pesos y bias
-    updateWeightsTable() {
-        if (!this.currentModel) return;
-        
-        const container = this.elements.weightsContainer;
-        container.innerHTML = '';
-        
-        // Crear tablas para cada capa
-        for (let l = 0; l < this.currentModel.weights.length; l++) {
-            const layerDiv = document.createElement('div');
-            layerDiv.className = 'weight-layer';
-            
-            const layerTitle = document.createElement('h4');
-            layerTitle.textContent = l === this.currentModel.weights.length - 1 ? 
-                'Capa de salida' : `Capa oculta ${l+1}`;
-            layerDiv.appendChild(layerTitle);
-            
-            // Tabla de pesos
-            const weightTable = document.createElement('table');
-            weightTable.className = 'weights-table';
-            
-            // Crear encabezado de tabla
-            const thead = document.createElement('thead');
-            const headerRow = document.createElement('tr');
-            
-            // Añadir encabezado vacío para la esquina
-            headerRow.appendChild(document.createElement('th'));
-            
-            // Añadir encabezados de columnas (neuronas de entrada)
-            const prevLayerSize = this.currentModel.weights[l][0].length;
-            for (let i = 0; i < prevLayerSize; i++) {
-                const th = document.createElement('th');
-                th.textContent = `Entrada ${i+1}`;
-                headerRow.appendChild(th);
-            }
-            
-            // Añadir columna para bias
-            const biasHeader = document.createElement('th');
-            biasHeader.textContent = 'Bias';
-            headerRow.appendChild(biasHeader);
-            
-            thead.appendChild(headerRow);
-            weightTable.appendChild(thead);
-            
-            // Crear cuerpo de la tabla
-            const tbody = document.createElement('tbody');
-            
-            // Añadir filas (una por neurona en la capa actual)
-            for (let i = 0; i < this.currentModel.weights[l].length; i++) {
+            // Añadir filas para cada modelo
+            this.savedModels.forEach((model, index) => {
                 const row = document.createElement('tr');
                 
-                // Nombre de la neurona
-                const neuronName = document.createElement('th');
-                neuronName.textContent = `Neurona ${i+1}`;
-                row.appendChild(neuronName);
-                
-                // Pesos de esta neurona
-                for (let j = 0; j < this.currentModel.weights[l][i].length; j++) {
-                    const cell = document.createElement('td');
-                    cell.textContent = this.currentModel.weights[l][i][j].toFixed(4);
-                    row.appendChild(cell);
-                }
-                
-                // Bias de esta neurona
-                const biasCell = document.createElement('td');
-                biasCell.textContent = this.currentModel.biases[l][i].toFixed(4);
-                row.appendChild(biasCell);
+                // Añadir celdas
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${model.architecture}</td>
+                    <td>${model.activation}</td>
+                    <td>${model.learningRate}</td>
+                    <td>${model.epochs}</td>
+                    <td>${model.loss.toFixed(6)}</td>
+                    <td>${model.trainingTime}s</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary view-model" data-model-id="${model.id}">Ver</button>
+                        <button class="btn btn-sm btn-danger delete-model" data-model-id="${model.id}">Eliminar</button>
+                    </td>
+                `;
                 
                 tbody.appendChild(row);
+                
+                // Añadir event listeners a botones
+                const viewBtn = row.querySelector('.view-model');
+                const deleteBtn = row.querySelector('.delete-model');
+                
+                if (viewBtn) {
+                    viewBtn.addEventListener('click', () => {
+                        // Cargar modelo para visualización
+                        const selectedModel = this.savedModels.find(m => m.id === model.id);
+                        if (selectedModel && selectedModel.model) {
+                            this.currentModel = selectedModel.model;
+                            this.changeTab('visualization');
+                        }
+                    });
+                }
+                
+                if (deleteBtn) {
+                    deleteBtn.addEventListener('click', () => {
+                        // Eliminar modelo
+                        this.savedModels = this.savedModels.filter(m => m.id !== model.id);
+                        this.updateComparisonTable();
+                    });
+                }
+            });
+            
+            console.log('Tabla de comparación actualizada');
+        } catch (error) {
+            console.error('Error al actualizar tabla de comparación:', error);
+        }
+    }
+    
+    // Actualizar visualización de la red
+    updateVisualization() {
+        try {
+            if (!this.currentModel) return;
+            
+            // Actualizar estructura de la red
+            this.updateNetworkStructure();
+            
+            // Actualizar superficie de decisión
+            this.updateDecisionSurface();
+            
+            console.log('Visualización actualizada');
+        } catch (error) {
+            console.error('Error al actualizar visualización:', error);
+        }
+    }
+    
+    // Actualizar estructura de la red
+    updateNetworkStructure() {
+        try {
+            if (!this.currentModel || !this.elements.networkStructure) return;
+            
+            const canvas = this.elements.networkStructure;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+            
+            // Limpiar canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Configuración
+            const padding = 40;
+            const width = canvas.width - 2 * padding;
+            const height = canvas.height - 2 * padding;
+            
+            // Determinar la arquitectura de la red
+            const layers = [
+                this.currentModel.config.inputDim, 
+                ...this.currentModel.config.hiddenDims, 
+                this.currentModel.config.outputDim
+            ];
+            const maxNeurons = Math.max(...layers);
+            
+            // Calcular tamaño de neuronas y espaciado
+            const neuronRadius = Math.min(15, height / (2 * maxNeurons));
+            const layerSpacing = width / (layers.length - 1);
+            
+            // Dibujar capas
+            for (let l = 0; l < layers.length; l++) {
+                const neurons = layers[l];
+                const layerHeight = neurons * 2 * neuronRadius;
+                const startY = (height - layerHeight) / 2 + padding + neuronRadius;
+                const x = l * layerSpacing + padding;
+                
+                // Dibujar conexiones
+                if (l > 0) {
+                    const prevNeurons = layers[l-1];
+                    const prevLayerHeight = prevNeurons * 2 * neuronRadius;
+                    const prevStartY = (height - prevLayerHeight) / 2 + padding + neuronRadius;
+                    const prevX = (l-1) * layerSpacing + padding;
+                    
+                    // Para cada neurona en esta capa
+                    for (let j = 0; j < neurons; j++) {
+                        const y = startY + j * 2 * neuronRadius;
+                        
+                        // Conectar con todas las neuronas de la capa anterior
+                        for (let i = 0; i < prevNeurons; i++) {
+                            const prevY = prevStartY + i * 2 * neuronRadius;
+                            
+                            // Obtener peso si está disponible
+                            let weight = 0;
+                            if (l === 1 && this.currentModel.weights[0]) { // Primera capa oculta
+                                weight = this.currentModel.weights[0][j][i] || 0;
+                            } else if (l > 1 && this.currentModel.weights[l-1]) { // Capas ocultas posteriores
+                                weight = this.currentModel.weights[l-1][j][i] || 0;
+                            }
+                            
+                            // Determinar color y grosor basado en el peso
+                            const absWeight = Math.abs(weight);
+                            const maxWeight = 1.0; // Valor arbitrario para normalización
+                            const normalizedWeight = Math.min(absWeight / maxWeight, 1);
+                            
+                            // Positivo: azul, Negativo: rojo
+                            const color = weight >= 0 ? 
+                                `rgba(0, 0, 255, ${0.1 + 0.9 * normalizedWeight})` : 
+                                `rgba(255, 0, 0, ${0.1 + 0.9 * normalizedWeight})`;
+                            
+                            const lineWidth = 0.5 + 2.5 * normalizedWeight;
+                            
+                            // Dibujar conexión
+                            ctx.beginPath();
+                            ctx.strokeStyle = color;
+                            ctx.lineWidth = lineWidth;
+                            ctx.moveTo(prevX, prevY);
+                            ctx.lineTo(x, y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                
+                // Dibujar neuronas
+                for (let i = 0; i < neurons; i++) {
+                    const y = startY + i * 2 * neuronRadius;
+                    
+                    // Determinar color de neurona por capa
+                    let fillColor;
+                    if (l === 0) fillColor = 'rgba(255, 165, 0, 0.8)'; // Entrada: naranja
+                    else if (l === layers.length - 1) fillColor = 'rgba(50, 205, 50, 0.8)'; // Salida: verde
+                    else fillColor = 'rgba(30, 144, 255, 0.8)'; // Oculta: azul
+                    
+                    // Dibujar neurona
+                    ctx.beginPath();
+                    ctx.arc(x, y, neuronRadius, 0, Math.PI * 2);
+                    ctx.fillStyle = fillColor;
+                    ctx.fill();
+                    ctx.strokeStyle = 'rgba(0, 0, 0, 0.6)';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                }
             }
             
-            weightTable.appendChild(tbody);
-            layerDiv.appendChild(weightTable);
-            container.appendChild(layerDiv);
+            console.log('Estructura de la red actualizada');
+        } catch (error) {
+            console.error('Error al actualizar estructura de la red:', error);
         }
     }
     
-    // Actualizar tabla de predicciones para ejemplos
-    updatePredictionsTable() {
-        if (!this.currentModel) return;
-        
-        const container = this.elements.predictionsContainer;
-        container.innerHTML = '';
-        
-        // Crear tabla
-        const table = document.createElement('table');
-        table.className = 'predictions-table';
-        
-        // Encabezado
-        const thead = document.createElement('thead');
-        const headerRow = document.createElement('tr');
-        
-        headerRow.innerHTML = `
-            <th>X1</th>
-            <th>X2</th>
-            <th>Y1 (AND)</th>
-            <th>Y2 (OR)</th>
-            <th>Predicción Y1</th>
-            <th>Predicción Y2</th>
-        `;
-        
-        thead.appendChild(headerRow);
-        table.appendChild(thead);
-        
-        // Cuerpo
-        const tbody = document.createElement('tbody');
-        
-        // Ejemplos base sin ruido
-        const baseExamples = [
-            {x1: 0, x2: 0, y1: 0, y2: 0},
-            {x1: 0, x2: 1, y1: 0, y2: 1},
-            {x1: 1, x2: 0, y1: 0, y2: 1},
-            {x1: 1, x2: 1, y1: 1, y2: 1}
-        ];
-        
-        // Mostrar predicciones para cada ejemplo
-        for (const example of baseExamples) {
-            // Preparar inputs
-            const X = [[example.x1], [example.x2]];
+    // Actualizar superficie de decisión
+    updateDecisionSurface() {
+        try {
+            if (!this.currentModel || !this.elements.decisionSurface) return;
             
-            // Obtener predicción
-            const Y_pred = this.currentModel.predict(X);
+            const canvas = this.elements.decisionSurface;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
             
-            // Crear fila
-            const row = document.createElement('tr');
-            
-            row.innerHTML = `
-                <td>${example.x1}</td>
-                <td>${example.x2}</td>
-                <td>${example.y1}</td>
-                <td>${example.y2}</td>
-                <td>${Y_pred[0][0].toFixed(4)}</td>
-                <td>${Y_pred[1][0].toFixed(4)}</td>
-            `;
-            
-            tbody.appendChild(row);
-        }
-        
-        table.appendChild(tbody);
-        container.appendChild(table);
-    }
-    
-    // Dibujar superficie de decisión
-    drawDecisionSurface() {
-        if (!this.currentModel) return;
-        
-        const canvas = this.elements.decisionSurface;
-        const ctx = canvas.getContext('2d');
-        
-        // Limpiar canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // Dimensiones del canvas
-        const width = canvas.width;
-        const height = canvas.height;
-        
-        // Rango para X1 y X2 (ampliado para visualizar mejor)
-        const xMin = -0.5;
-        const xMax = 1.5;
-        const yMin = -0.5;
-        const yMax = 1.5;
-        
-        // Número de puntos en la cuadrícula
-        const resolution = 100;
-        
-        // Tamaño de cada celda
-        const cellWidth = width / resolution;
-        const cellHeight = height / resolution;
-        
-        // Crear imagen de la superficie de decisión
-        const imageData = ctx.createImageData(width, height);
-        
-        // Para cada punto en la cuadrícula
-        for (let i = 0; i < resolution; i++) {
-            for (let j = 0; j < resolution; j++) {
-                // Convertir coordenadas de píxel a valores X1, X2
-                const x1 = xMin + (xMax - xMin) * i / resolution;
-                const x2 = yMax - (yMax - yMin) * j / resolution; // Invertido para Y
-                
-                // Predecir
-                const X = [[x1], [x2]];
-                const Y_pred = this.currentModel.predict(X);
-                
-                // Obtener valores predichos para AND y OR
-                const andPred = Y_pred[0][0];
-                const orPred = Y_pred[1][0];
-                
-                // Calcular color basado en predicciones
-                // Rojo: AND, Verde: OR, Azul: Ambos
-                const pixelIndex = (j * width + i) * 4;
-                
-                imageData.data[pixelIndex] = Math.min(255, Math.max(0, Math.round(andPred * 255))); // R
-                imageData.data[pixelIndex + 1] = Math.min(255, Math.max(0, Math.round(orPred * 255))); // G
-                imageData.data[pixelIndex + 2] = 0; // B
-                imageData.data[pixelIndex + 3] = 255; // Alpha
+            // Solo para redes con 2 entradas
+            if (this.currentModel.config.inputDim !== 2) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.font = '16px Arial';
+                ctx.fillStyle = 'black';
+                ctx.textAlign = 'center';
+                ctx.fillText('Solo disponible para redes con 2 entradas', canvas.width/2, canvas.height/2);
+                return;
             }
-        }
-        
-        // Dibujar la imagen
-        ctx.putImageData(imageData, 0, 0);
-        
-        // Dibujar ejes
-        ctx.strokeStyle = 'white';
-        ctx.lineWidth = 2;
-        
-        // Eje X
-        const yAxisPos = height * (yMax / (yMax - yMin));
-        ctx.beginPath();
-        ctx.moveTo(0, yAxisPos);
-        ctx.lineTo(width, yAxisPos);
-        ctx.stroke();
-        
-        // Eje Y
-        const xAxisPos = width * (0 - xMin) / (xMax - xMin);
-        ctx.beginPath();
-        ctx.moveTo(xAxisPos, 0);
-        ctx.lineTo(xAxisPos, height);
-        ctx.stroke();
-        
-        // Marcar puntos de ejemplo
-        const examples = [
-            {x1: 0, x2: 0, color: 'white'},
-            {x1: 0, x2: 1, color: 'lime'},
-            {x1: 1, x2: 0, color: 'lime'},
-            {x1: 1, x2: 1, color: 'yellow'}
-        ];
-        
-        for (const example of examples) {
-            const x = width * (example.x1 - xMin) / (xMax - xMin);
-            const y = height * (yMax - example.x2) / (yMax - yMin);
             
-            ctx.fillStyle = example.color;
-            ctx.beginPath();
-            ctx.arc(x, y, 6, 0, 2 * Math.PI);
-            ctx.fill();
-            ctx.strokeStyle = 'black';
-            ctx.lineWidth = 1;
-            ctx.stroke();
-        }
-    }
-    
-    // Manejar carga de archivo de modelo
-    handleModelFileUpload() {
-        const file = this.elements.modelFile.files[0];
-        if (!file) return;
-        
-        // Mostrar nombre del archivo
-        this.elements.modelFilename.textContent = file.name;
-        
-        // Leer archivo
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            try {
-                const modelData = JSON.parse(e.target.result);
-                
-                // Crear modelo a partir de los datos
-                this.currentModel = VectorNN.fromJSON(modelData);
-                
-                // Actualizar configuración actual
-                this.currentConfig = {
-                    architecture: modelData.config.inputDim + '-' + 
-                                 modelData.config.hiddenDims.join('-') + '-' + 
-                                 modelData.config.outputDim,
-                    learningRate: modelData.config.learningRate,
-                    epochs: modelData.epoch,
-                    activation: modelData.config.activation
-                };
-                
-                // Actualizar UI del reporte
-                this.updateModelInfo();
-                
-            } catch (error) {
-                console.error('Error cargando modelo:', error);
-                alert('Error al cargar el modelo: ' + error.message);
+            // Dimensiones
+            const width = canvas.width;
+            const height = canvas.height;
+            
+            // Crear superficie de decisión
+            const imageData = ctx.createImageData(width, height);
+            const data = imageData.data;
+            
+            // Rangos para x e y (entrada de la red)
+            const xRange = { min: -2, max: 2 };
+            const yRange = { min: -2, max: 2 };
+            
+            // Para cada pixel
+            for (let x = 0; x < width; x++) {
+                for (let y = 0; y < height; y++) {
+                    // Convertir pixel a coordenadas de entrada
+                    const inputX = xRange.min + (xRange.max - xRange.min) * (x / width);
+                    const inputY = yRange.min + (yRange.max - yRange.min) * ((height - y) / height); // Invertido para que el eje Y apunte hacia arriba
+                    
+                    // Predecir con el modelo
+                    const output = this.currentModel.predict([[inputX, inputY]]);
+                    
+                    // Índice del pixel en el array de datos
+                    const idx = (y * width + x) * 4;
+                    
+                    // Asignar color según salida (asumiendo salida entre 0 y 1)
+                    if (output[0].length === 1) {
+                        // Escala de grises para salida unidimensional
+                        const val = Math.floor(output[0][0] * 255);
+                        data[idx] = val;     // R
+                        data[idx + 1] = val; // G
+                        data[idx + 2] = val; // B
+                    } else if (output[0].length === 2) {
+                        // Rojo vs Azul para salida bidimensional
+                        data[idx] = Math.floor(output[0][0] * 255);     // R
+                        data[idx + 1] = 0;                              // G
+                        data[idx + 2] = Math.floor(output[0][1] * 255); // B
+                    } else {
+                        // Escala de colores para más dimensiones (simplificado)
+                        const maxIdx = output[0].indexOf(Math.max(...output[0]));
+                        const hue = (maxIdx / output[0].length) * 360;
+                        const [r, g, b] = this.hslToRgb(hue / 360, 1, 0.5);
+                        data[idx] = r;     // R
+                        data[idx + 1] = g; // G
+                        data[idx + 2] = b; // B
+                    }
+                    
+                    // Alpha
+                    data[idx + 3] = 255; // Alpha
+                }
             }
-        };
-        
-        reader.readAsText(file);
-    }
-    
-    // Actualizar información del modelo en la pestaña de reporte
-    updateModelInfo() {
-        if (!this.currentModel) return;
-        
-        this.elements.modelInfo.value = 
-            `Arquitectura: ${this.currentConfig.architecture}\n` +
-            `Activación: ${this.currentConfig.activation}\n` +
-            `Tasa de aprendizaje: ${this.currentConfig.learningRate}\n` +
-            `Épocas: ${this.currentConfig.epochs}\n` +
-            `MSE final: ${this.currentModel.lossHistory[this.currentModel.lossHistory.length - 1].toFixed(6)}`;
+            
+            // Dibujar la imagen
+            ctx.putImageData(imageData, 0, 0);
+            
+            // Dibujar puntos de datos si están disponibles
+            if (this.trainingData) {
+                const X = this.trainingData.X;
+                const Y = this.trainingData.Y;
+                
+                for (let i = 0; i < X.length; i++) {
+                    // Convertir coordenadas de datos a pixel
+                    const pixelX = ((X[i][0] - xRange.min) / (xRange.max - xRange.min)) * width;
+                    const pixelY = height - ((X[i][1] - yRange.min) / (yRange.max - yRange.min)) * height;
+                    
+                    // Determinar color por clase
+                    let color;
+                    if (Y[i].length === 1) {
+                        // Escala de grises
+                        const val = Math.floor((1 - Y[i][0]) * 255);
+                        color = `rgb(${val},${val},${val})`;
+                    } else if (Y[i].length === 2) {
+                        // Rojo vs Azul
+                        color = Y[i][0] > Y[i][1] ? 'red' : 'blue';
+                    } else {
+                        // Multiclase
+                        const maxIdx = Y[i].indexOf(Math.max(...Y[i]));
+                        const hue = (maxIdx / Y[i].length) * 360;
+                        const [r, g, b] = this.hslToRgb(hue / 360, 1, 0.5);
+                        color = `rgb(${r},${g},${b})`;
+                    }
+                    
+                    // Dibujar punto
+                    ctx.beginPath();
+                    ctx.arc(pixelX, pixelY, 4, 0, Math.PI * 2);
+                    ctx.fillStyle = color;
+                    ctx.fill();
+                    ctx.strokeStyle = 'white';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                }
+            }
+            
+            console.log('Superficie de decisión actualizada');
+        } catch (error) {
+            console.error('Error al actualizar superficie de decisión:', error);
+        }
     }
     
     // Generar reporte
     generateReport() {
-        // Verificar campos requeridos
-        if (!this.elements.studentName.value) {
-            alert('Por favor, ingresa tu nombre.');
-            return;
-        }
-        
-        if (!this.currentModel && !this.elements.modelFile.files[0]) {
-            alert('Por favor, carga un modelo entrenado o entrena uno nuevo.');
-            return;
-        }
-        
-        if (!this.elements.criticalAnalysis.value) {
-            alert('Por favor, completa el análisis crítico.');
-            return;
-        }
-        
-        // Generar contenido del reporte
-        const studentName = this.elements.studentName.value;
-        const modelInfo = this.elements.modelInfo.value;
-        const criticalAnalysis = this.elements.criticalAnalysis.value;
-        
-        // Construir HTML del reporte
-        const reportHTML = `
-            <div class="report">
-                <h1>Reporte: Actividad de Entrenamiento de Redes Neuronales</h1>
-                <h2>Estudiante: ${studentName}</h2>
-                <hr>
+        try {
+            if (!this.currentModel) {
+                alert('Entrene un modelo antes de generar el reporte');
+                return;
+            }
+            
+            // Obtener datos
+            const studentName = this.elements.studentName ? this.elements.studentName.value || 'Estudiante' : 'Estudiante';
+            const modelInfo = this.elements.modelInfo ? this.elements.modelInfo.value || '' : '';
+            const analysis = this.elements.criticalAnalysis ? this.elements.criticalAnalysis.value || '' : '';
+            
+            // Crear contenido HTML
+            const currentDate = new Date().toLocaleDateString();
+            
+            let reportHTML = `
+                <div class="report">
+                    <h1>Reporte de Entrenamiento de Red Neuronal</h1>
+                    <p class="date">${currentDate}</p>
+                    <h2>Estudiante: ${studentName}</h2>
+                    
+                    <h3>Configuración del Modelo</h3>
+                    <ul>
+                        <li><strong>Arquitectura:</strong> ${this.currentConfig.architecture}</li>
+                        <li><strong>Función de Activación:</strong> ${this.currentConfig.activation}</li>
+                        <li><strong>Tasa de Aprendizaje:</strong> ${this.currentConfig.learningRate}</li>
+                        <li><strong>Épocas:</strong> ${this.epochCounter}</li>
+                        <li><strong>Error Final (MSE):</strong> ${this.currentModel.lossHistory[this.currentModel.lossHistory.length - 1].toFixed(6)}</li>
+                    </ul>
+                    
+                    <h3>Descripción del Modelo</h3>
+                    <div class="description">
+                        ${modelInfo.replace(/\n/g, '<br>')}
+                    </div>
+                    
+                    <h3>Análisis Crítico</h3>
+                    <div class="analysis">
+                        ${analysis.replace(/\n/g, '<br>')}
+                    </div>
+                    
+                    <div class="visualizations">
+                        <h3>Visualizaciones</h3>
+                        <div class="visualization-container">
+                            <h4>Evolución del Error</h4>
+                            <img id="loss-chart-img" alt="Gráfico de pérdida" />
+                        </div>
+                        
+                        <div class="visualization-container">
+                            <h4>Estructura de la Red</h4>
+                            <img id="network-structure-img" alt="Estructura de la red" />
+                        </div>
+                        
+                        <div class="visualization-container">
+                            <h4>Superficie de Decisión</h4>
+                            <img id="decision-surface-img" alt="Superficie de decisión" />
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Mostrar vista previa
+            if (this.elements.reportContent) {
+                this.elements.reportContent.innerHTML = reportHTML;
+            }
+            
+            // Capturar y agregar imágenes
+            this.captureCanvasesToReport().then(() => {
+                console.log('Reporte generado exitosamente');
                 
-                <h3>Información del Modelo</h3>
-                <pre>${modelInfo}</pre>
+                // Mostrar vista previa y botón de descarga
+                if (this.elements.reportPreview) {
+                    this.elements.reportPreview.classList.add('active');
+                }
                 
-                <h3>Análisis Crítico</h3>
-                <div class="analysis">${criticalAnalysis.replace(/\n/g, '<br>')}</div>
-                
-                <h3>Fecha y Hora</h3>
-                <p>${new Date().toLocaleString()}</p>
-            </div>
-        `;
-        
-        // Mostrar vista previa
-        this.elements.reportContent.innerHTML = reportHTML;
-        this.elements.reportPreview.style.display = 'block';
-        this.elements.downloadReportBtn.disabled = false;
+                if (this.elements.downloadReportBtn) {
+                    this.elements.downloadReportBtn.disabled = false;
+                }
+            }).catch(error => {
+                console.error('Error al capturar imágenes para el reporte:', error);
+            });
+        } catch (error) {
+            console.error('Error al generar reporte:', error);
+        }
     }
     
-    // Descargar reporte como PDF o HTML
+    // Capturar canvas para el reporte
+    async captureCanvasesToReport() {
+        try {
+            // Capturar gráfico de pérdida
+            if (this.elements.lossChart && this.charts.lossChart) {
+                const lossChartImg = document.getElementById('loss-chart-img');
+                if (lossChartImg) {
+                    lossChartImg.src = this.elements.lossChart.toDataURL('image/png');
+                }
+            }
+            
+            // Capturar estructura de red
+            if (this.elements.networkStructure) {
+                const networkImg = document.getElementById('network-structure-img');
+                if (networkImg) {
+                    networkImg.src = this.elements.networkStructure.toDataURL('image/png');
+                }
+            }
+            
+            // Capturar superficie de decisión
+            if (this.elements.decisionSurface) {
+                const decisionImg = document.getElementById('decision-surface-img');
+                if (decisionImg) {
+                    decisionImg.src = this.elements.decisionSurface.toDataURL('image/png');
+                }
+            }
+        } catch (error) {
+            console.error('Error al capturar imágenes:', error);
+            throw error;
+        }
+    }
+    
+    // Descargar reporte como PDF
     downloadReport() {
-        const reportHTML = this.elements.reportContent.innerHTML;
-        const studentName = this.elements.studentName.value.replace(/\s+/g, '_');
-        
-        // Crear HTML completo
-        const fullHTML = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta charset="UTF-8">
-                <title>Reporte de Actividad - ${studentName}</title>
+        try {
+            if (!this.elements.reportContent) {
+                alert('Primero genere un reporte');
+                return;
+            }
+            
+            const studentName = this.elements.studentName ? this.elements.studentName.value || 'Estudiante' : 'Estudiante';
+            const filename = `reporte_${studentName.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.pdf`;
+            
+            // Crear estilos para el PDF
+            const style = `
                 <style>
-                    body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
-                    h1, h2, h3 { color: #333; }
-                    hr { border: 1px solid #ddd; margin: 20px 0; }
-                    pre { background: #f5f5f5; padding: 10px; border-radius: 5px; }
-                    .analysis { text-align: justify; }
+                    body { font-family: Arial, sans-serif; line-height: 1.5; }
+                    h1 { text-align: center; color: #333; }
+                    h2, h3, h4 { color: #444; }
+                    .date { text-align: right; font-style: italic; }
+                    .visualization-container { margin: 20px 0; }
+                    img { max-width: 100%; height: auto; border: 1px solid #ddd; }
+                    ul { padding-left: 20px; }
+                    .description, .analysis { margin-bottom: 20px; text-align: justify; }
                 </style>
-            </head>
-            <body>
-                ${reportHTML}
-            </body>
-            </html>
-        `;
-        
-        // Crear blob y link para descarga
-        const blob = new Blob([fullHTML], { type: 'text/html' });
-        const url = URL.createObjectURL(blob);
-        
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `reporte_${studentName}_${new Date().toISOString().slice(0, 10)}.html`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+            `;
+            
+            // Combinar HTML con estilos
+            const htmlContent = style + this.elements.reportContent.innerHTML;
+            
+            // Crear PDF con html2pdf
+            if (typeof html2pdf !== 'undefined') {
+                const opt = {
+                    margin: 10,
+                    filename: filename,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+                
+                html2pdf().from(htmlContent).set(opt).save();
+                console.log('Reporte descargado como PDF');
+            } else {
+                console.error('html2pdf no está disponible');
+                alert('Error: La biblioteca para generar PDFs no está disponible');
+            }
+        } catch (error) {
+            console.error('Error al descargar reporte:', error);
+        }
     }
     
-    // Método para inicializar la aplicación
-    static init() {
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM cargado, inicializando aplicación');
-            window.app = new ActivityApp();
-            window.app.init();
-        });
+    // Utilidad para convertir HSL a RGB
+    hslToRgb(h, s, l) {
+        let r, g, b;
+        
+        if (s === 0) {
+            r = g = b = l; // achromatic
+        } else {
+            const hue2rgb = (p, q, t) => {
+                if (t < 0) t += 1;
+                if (t > 1) t -= 1;
+                if (t < 1/6) return p + (q - p) * 6 * t;
+                if (t < 1/2) return q;
+                if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                return p;
+            };
+            
+            const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            const p = 2 * l - q;
+            
+            r = hue2rgb(p, q, h + 1/3);
+            g = hue2rgb(p, q, h);
+            b = hue2rgb(p, q, h - 1/3);
+        }
+        
+        return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
     }
-}
+}  // Fin de la clase ActivityApp
+
+// Inicializar la aplicación cuando el DOM esté cargado
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM cargado, inicializando ActivityApp...');
+    const app = new ActivityApp();
+    app.init();
+    window.activityApp = app; // Hacer accesible desde la consola para debugging
+});
