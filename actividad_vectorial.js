@@ -133,27 +133,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const lrInput = document.getElementById('learningRate');
     const trainBtn = document.getElementById('train-btn');
     const reportBtn = document.getElementById('report-btn');
-    const profitChartCtx = document.getElementById('profitChart').getContext('2d');
     const mseChartCtx = document.getElementById('mseChart').getContext('2d');
-    let profitChart, mseChart;
+    let mseChart;
 
     // Datos
     const data = generateData(30);
 
-    // Inicializa gráficas vacías
-    profitChart = new Chart(profitChartCtx, {
-        type: 'scatter',
-        data: {
-            datasets: [
-                { label: 'Lucro Real', data: [], backgroundColor: '#48bb78' },
-                { label: 'Predicción', data: [], backgroundColor: '#667eea' }
-            ]
-        },
-        options: {
-            scales: { x: { title: { display: true, text: 'x₁ (Laptops vendidas)' } }, y: { title: { display: true, text: 'Lucro' } } },
-            plugins: { legend: { position: 'top' } }
-        }
-    });
+    // Inicializa gráfica de MSE
     mseChart = new Chart(mseChartCtx, {
         type: 'line',
         data: { labels: [], datasets: [{ label: 'MSE', data: [], borderColor: '#e53e3e', fill: false }] },
@@ -174,17 +160,14 @@ document.addEventListener('DOMContentLoaded', () => {
         let b2v = parseFloat(b2.value);
         let lr = parseFloat(lrInput.value);
         let epochs = 120;
-        // Ocultar gráfica de lucro real vs predicción (ya no se usa)
+        // Inicializa solo la gráfica de MSE y oculta el resumen numérico
         document.getElementById('resultado-numerico').style.display = 'none';
         mseChart.data.labels = [];
         mseChart.data.datasets[0].data = [];
         mseChart.update();
         // Entrena
         let history = await trainModel(data, W1, b1, W2, b2v, lr, epochs, (epoch, y_pred, loss) => {
-            // Actualiza predicción (eje X = índice de muestra)
-            profitChart.data.datasets[1].data = y_pred.map((y, i) => ({ x: i, y: y }));
-            profitChart.update();
-            // Actualiza MSE
+            // Solo actualiza MSE
             mseChart.data.labels.push(epoch);
             mseChart.data.datasets[0].data.push(loss);
             mseChart.update();
@@ -192,9 +175,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Habilita reporte
         reportBtn.disabled = false;
         trainBtn.disabled = false;
-        // Guardar x1, x2, y real y predicho para el reporte
+        // Guardar x1, x2, y real y predicho para el reporte (sin usar ninguna gráfica)
+        const y_pred_final = nnPredict(data.x1, data.x2, W1, b1, W2, b2v);
         const realArr = data.x1.map((xi, i) => ({ x1: data.x1[i], x2: data.x2[i], y: data.y[i] }));
-        const predArr = history.W2[history.W2.length-1].map((yp, i) => ({ x1: data.x1[i], x2: data.x2[i], y: yp }));
+        const predArr = y_pred_final.map((yp, i) => ({ x1: data.x1[i], x2: data.x2[i], y: yp }));
         window._actividadVectorialReporte = {
             W1: JSON.parse(JSON.stringify(W1)),
             b1: [...b1],
