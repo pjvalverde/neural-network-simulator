@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad: Optimización de Lucro con Red Neuronal</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .container { max-width: 900px; margin: 30px auto; background: #fff8; border-radius: 16px; padding: 32px; box-shadow: 0 8px 32px rgba(0,0,0,0.15); }
+        h1, h2 { text-align: center; }
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+        .input-group { background: #f7fafc; border-radius: 8px; padding: 16px; }
+        label { font-weight: 600; display: block; margin-bottom: 6px; }
+        input[type=number], input[type=range] { width: 100%; padding: 6px; border-radius: 4px; border: 1px solid #ccc; }
+        .slider-value { font-weight: bold; }
+        .button-row { text-align: center; margin: 24px 0; }
+        button { padding: 10px 24px; border-radius: 6px; border: none; font-size: 1em; background: #667eea; color: white; cursor: pointer; margin: 0 8px; }
+        button:disabled { opacity: 0.5; }
+        .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 32px; }
+        .chart-container { background: #f7fafc; padding: 18px; border-radius: 12px; }
+        .report-section { margin-top: 32px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Actividad: Optimización de Lucro con Red Neuronal</h1>
+        <p style="text-align:center;max-width:700px;margin:0 auto 24px;">Ajusta los pesos, bias y tasa de aprendizaje para que la red neuronal prediga el lucro real de ventas de computadores. Observa cómo desciende la función de costo (MSE) y genera un reporte de tu experimento.</p>
+        <div class="input-grid">
+            <div class="input-group">
+                <label for="pesos">Pesos iniciales (vector columna, 3 elementos)</label>
+                <input type="number" id="peso1" value="1" step="0.01"> <br>
+                <input type="number" id="peso2" value="1" step="0.01"> <br>
+                <input type="number" id="peso3" value="1" step="0.01">
+            </div>
+            <div class="input-group">
+                <label for="bias">Bias iniciales (vector columna, 3 elementos)</label>
+                <input type="number" id="bias1" value="0" step="0.01"> <br>
+                <input type="number" id="bias2" value="0" step="0.01"> <br>
+                <input type="number" id="bias3" value="0" step="0.01">
+            </div>
+            <div class="input-group">
+                <label for="learningRate">Tasa de aprendizaje</label>
+                <input type="range" id="learningRate" min="0.01" max="0.15" step="0.01" value="0.05" oninput="document.getElementById('lr-value').innerText=this.value">
+                <span class="slider-value" id="lr-value">0.05</span>
+            </div>
+        </div>
+        <div class="button-row">
+            <button id="train-btn">Entrenar Red</button>
+            <button id="report-btn" disabled>Generar Reporte PDF</button>
+        </div>
+        <div class="charts-grid">
+            <div class="chart-container">
+                <h3>Lucro Real vs Predicción</h3>
+                <canvas id="profitChart" width="350" height="240"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3>Función de Costo (MSE)</h3>
+                <canvas id="mseChart" width="350" height="240"></canvas>
+            </div>
+        </div>
+        <div class="report-section" id="report-section" style="display:none;">
+            <h3>Reporte de tu Experimento</h3>
+            <div id="report-summary"></div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="actividad_vectorial.js"></script>
+</body>
+</html>
