@@ -33,53 +33,81 @@ function generateData(n = 30) {
     return { x1, x2, y };
 }
 
-// --- Red neuronal simple (1 capa, pesos y bias vectoriales, ReLU) ---
-function nnPredict(x1, x2, weights, bias) {
-    // x1, x2: arrays
-    // weights, bias: arrays de 3 elementos
+// --- Red neuronal con capa oculta (2 neuronas ocultas, 1 salida) ---
+function nnPredict(x1, x2, W1, b1, W2, b2) {
+    // x1, x2: arrays (N)
+    // W1: 2x2, b1: 2x1, W2: 1x2, b2: escalar
     let y_pred = [];
     for (let i = 0; i < x1.length; i++) {
-        // Simula: y = relu(w1*x1 + w2*x2 + w3*1 + b1 + b2 + b3)
-        let z = weights[0]*x1[i] + weights[1]*x2[i] + weights[2]*1 + bias[0] + bias[1] + bias[2];
-        y_pred.push(relu(z));
+        // Entrada
+        let x = [x1[i], x2[i]]; // (2,)
+        // Capa oculta: h = relu(W1·x + b1)
+        let h = [0, 0];
+        for (let j = 0; j < 2; j++) {
+            h[j] = relu(W1[j][0]*x[0] + W1[j][1]*x[1] + b1[j]);
+        }
+        // Salida: y_pred = W2·h + b2
+        let y = W2[0]*h[0] + W2[1]*h[1] + b2;
+        y_pred.push(y);
     }
     return y_pred;
 }
 
-// --- Entrenamiento por descenso de gradiente ---
-async function trainModel(data, weights, bias, lr, epochs, onUpdate) {
+// --- Entrenamiento por descenso de gradiente (capa oculta) ---
+async function trainModel(data, W1, b1, W2, b2, lr, epochs, onUpdate) {
     let { x1, x2, y } = data;
-    let history = { mse: [], weights: [], bias: [] };
+    let history = { mse: [], W1: [], b1: [], W2: [], b2: [] };
     for (let epoch = 0; epoch < epochs; epoch++) {
         // Forward
-        let y_pred = nnPredict(x1, x2, weights, bias);
+        let y_pred = nnPredict(x1, x2, W1, b1, W2, b2);
         let loss = mse(y, y_pred);
         history.mse.push(loss);
-        history.weights.push([...weights]);
-        history.bias.push([...bias]);
-        if (onUpdate && epoch % 10 === 0) onUpdate(epoch, y_pred, loss, weights, bias);
-        // Backprop (derivadas analíticas)
-        let grad_w = [0, 0, 0];
-        let grad_b = [0, 0, 0];
+        history.W1.push(JSON.parse(JSON.stringify(W1)));
+        history.b1.push([...b1]);
+        history.W2.push([...W2]);
+        history.b2.push(b2);
+        if (onUpdate && epoch % 10 === 0) onUpdate(epoch, y_pred, loss, W1, b1, W2, b2);
+        // Gradientes acumulados
+        let dW1 = [[0,0],[0,0]];
+        let db1 = [0,0];
+        let dW2 = [0,0];
+        let db2 = 0;
         for (let i = 0; i < x1.length; i++) {
-            let z = weights[0]*x1[i] + weights[1]*x2[i] + weights[2]*1 + bias[0] + bias[1] + bias[2];
-            let dz = z > 0 ? 1 : 0; // Derivada de ReLU
-            let err = (nnPredict([x1[i]], [x2[i]], weights, bias)[0] - y[i]);
-            grad_w[0] += 2 * err * x1[i] * dz;
-            grad_w[1] += 2 * err * x2[i] * dz;
-            grad_w[2] += 2 * err * 1 * dz;
-            grad_b[0] += 2 * err * dz;
-            grad_b[1] += 2 * err * dz;
-            grad_b[2] += 2 * err * dz;
+            // Forward individual
+            let x = [x1[i], x2[i]];
+            // Capa oculta
+            let z1 = [W1[0][0]*x[0] + W1[0][1]*x[1] + b1[0], W1[1][0]*x[0] + W1[1][1]*x[1] + b1[1]];
+            let h = [relu(z1[0]), relu(z1[1])];
+            // Salida
+            let y_hat = W2[0]*h[0] + W2[1]*h[1] + b2;
+            let err = y_hat - y[i];
+            // Gradiente salida
+            dW2[0] += 2 * err * h[0];
+            dW2[1] += 2 * err * h[1];
+            db2    += 2 * err;
+            // Gradiente capa oculta
+            for (let j = 0; j < 2; j++) {
+                let dh = W2[j] * 2 * err;
+                let dz = z1[j] > 0 ? 1 : 0;
+                db1[j] += dh * dz;
+                dW1[j][0] += dh * dz * x[0];
+                dW1[j][1] += dh * dz * x[1];
+            }
         }
         // Promedio
-        grad_w = grad_w.map(g => g / x1.length);
-        grad_b = grad_b.map(g => g / x1.length);
+        dW2 = dW2.map(g => g / x1.length);
+        db2 = db2 / x1.length;
+        db1 = db1.map(g => g / x1.length);
+        dW1 = dW1.map(row => row.map(g => g / x1.length));
         // Actualiza
-        for (let j = 0; j < 3; j++) {
-            weights[j] -= lr * grad_w[j];
-            bias[j] -= lr * grad_b[j];
+        for (let j = 0; j < 2; j++) {
+            W2[j] -= lr * dW2[j];
+            b1[j] -= lr * db1[j];
+            for (let k = 0; k < 2; k++) {
+                W1[j][k] -= lr * dW1[j][k];
+            }
         }
+        b2 -= lr * db2;
         // Simula animación
         await new Promise(res => setTimeout(res, 8));
     }
@@ -89,16 +117,19 @@ async function trainModel(data, weights, bias, lr, epochs, onUpdate) {
 // --- UI ---
 document.addEventListener('DOMContentLoaded', () => {
     // Elementos
-    const pesoInputs = [
-        document.getElementById('peso1'),
-        document.getElementById('peso2'),
-        document.getElementById('peso3'),
-    ];
-    const biasInputs = [
-        document.getElementById('bias1'),
-        document.getElementById('bias2'),
-        document.getElementById('bias3'),
-    ];
+    // W1: 2x2
+    const w1_11 = document.getElementById('w1_11');
+    const w1_12 = document.getElementById('w1_12');
+    const w1_21 = document.getElementById('w1_21');
+    const w1_22 = document.getElementById('w1_22');
+    // b1: 2x1
+    const b1_1 = document.getElementById('b1_1');
+    const b1_2 = document.getElementById('b1_2');
+    // W2: 1x2
+    const w2_1 = document.getElementById('w2_1');
+    const w2_2 = document.getElementById('w2_2');
+    // b2: 1x1
+    const b2 = document.getElementById('b2');
     const lrInput = document.getElementById('learningRate');
     const trainBtn = document.getElementById('train-btn');
     const reportBtn = document.getElementById('report-btn');
@@ -133,9 +164,14 @@ document.addEventListener('DOMContentLoaded', () => {
     trainBtn.addEventListener('click', async () => {
         trainBtn.disabled = true;
         reportBtn.disabled = true;
-        // Lee inputs
-        let weights = pesoInputs.map(inp => parseFloat(inp.value));
-        let bias = biasInputs.map(inp => parseFloat(inp.value));
+        // Lee inputs nuevos
+        let W1 = [
+            [parseFloat(w1_11.value), parseFloat(w1_12.value)],
+            [parseFloat(w1_21.value), parseFloat(w1_22.value)]
+        ];
+        let b1 = [parseFloat(b1_1.value), parseFloat(b1_2.value)];
+        let W2 = [parseFloat(w2_1.value), parseFloat(w2_2.value)];
+        let b2v = parseFloat(b2.value);
         let lr = parseFloat(lrInput.value);
         let epochs = 120;
         // Gráfica real
@@ -146,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
         mseChart.data.datasets[0].data = [];
         mseChart.update();
         // Entrena
-        let history = await trainModel(data, weights, bias, lr, epochs, (epoch, y_pred, loss) => {
+        let history = await trainModel(data, W1, b1, W2, b2v, lr, epochs, (epoch, y_pred, loss) => {
             // Actualiza predicción
             profitChart.data.datasets[1].data = data.x1.map((x, i) => ({ x: x, y: y_pred[i] }));
             profitChart.update();
@@ -160,8 +196,10 @@ document.addEventListener('DOMContentLoaded', () => {
         trainBtn.disabled = false;
         // Guarda datos para reporte
         window._actividadVectorialReporte = {
-            pesos: pesoInputs.map(inp => parseFloat(inp.value)),
-            bias: biasInputs.map(inp => parseFloat(inp.value)),
+            W1: JSON.parse(JSON.stringify(W1)),
+            b1: [...b1],
+            W2: [...W2],
+            b2: b2v,
             lr: lrInput.value,
             mse: history.mse[history.mse.length-1],
             pred: profitChart.data.datasets[1].data,
@@ -173,8 +211,12 @@ document.addEventListener('DOMContentLoaded', () => {
     reportBtn.addEventListener('click', () => {
         const rep = window._actividadVectorialReporte;
         if (!rep) return;
-        let html = `<b>Pesos iniciales:</b> [${rep.pesos.join(', ')}]<br>` +
-                   `<b>Bias iniciales:</b> [${rep.bias.join(', ')}]<br>` +
+        let html = `<b>W1 (entrada→oculta):</b><br>` +
+                   `[${rep.W1[0][0].toFixed(2)}, ${rep.W1[0][1].toFixed(2)}]<br>` +
+                   `[${rep.W1[1][0].toFixed(2)}, ${rep.W1[1][1].toFixed(2)}]<br>` +
+                   `<b>b1 (bias oculta):</b> [${rep.b1.map(v=>v.toFixed(2)).join(', ')}]<br>` +
+                   `<b>W2 (oculta→salida):</b> [${rep.W2.map(v=>v.toFixed(2)).join(', ')}]<br>` +
+                   `<b>b2 (bias salida):</b> ${rep.b2.toFixed(2)}<br>` +
                    `<b>Tasa de aprendizaje:</b> ${rep.lr}<br>` +
                    `<b>MSE final:</b> ${rep.mse.toFixed(4)}<br>`;
         document.getElementById('report-summary').innerHTML = html;
