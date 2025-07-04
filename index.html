@@ -333,19 +333,6 @@
         .processing {
             animation: pulse 0.5s ease-in-out;
         }
-    </style>
-</head>
-<body>
-    <!-- Panel de Ayuda / Teoría -->
-    <button id="openHelp" class="btn-info" style="position:fixed;top:20px;right:20px;z-index:9999;">📚 Ayuda/Teoría</button>
-    <div id="helpPanel" class="help-panel" style="display:none;z-index:10000;">
-        <button id="closeHelp" style="float:right;font-size:1.2em;">✖️</button>
-        <h2>📚 Teoría de la Red Neuronal</h2>
-        <h3>Funciones de Activación</h3>
-        <ul>
-            <li><b>Sigmoid:</b> <code>σ(x) = 1 / (1 + e<sup>-x</sup>)</code><br>Salida entre 0 y 1. Útil para probabilidades y clasificación binaria.</li>
-            <li><b>Tanh:</b> <code>tanh(x) = (e<sup>x</sup> - e<sup>-x</sup>) / (e<sup>x</sup> + e<sup>-x</sup>)</code><br>Salida entre -1 y 1. Centra los datos, útil en capas ocultas.</li>
-            <li><b>ReLU:</b> <code>ReLU(x) = max(0, x)</code><br>Salida desde 0 hasta infinito. Muy usada en redes profundas.</li>
         </ul>
         <h3>Funciones de Costo</h3>
         <ul>
@@ -362,7 +349,7 @@
         <header>
             <h1>Simulación de Red Neuronal</h1>
             <p>Visualización del Descenso de Gradiente y Función de Costo</p>
-            <a href="activity.html" class="btn-info" style="display:inline-block;margin:10px 0;">🧠 Ir a la Actividad de Redes Neuronales Vectoriales</a>
+            
         </header>
 
         <div class="main-content">
