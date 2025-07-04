@@ -28,7 +28,17 @@ document.addEventListener('DOMContentLoaded', () => {
         window._realFunctionType = realFunctionSelect.value;
         updateActivationSuggestion();
         // Regenerar datos nuevos con la función seleccionada
-        // (opcional: puedes recargar la página o regenerar datos aquí)
+        if (typeof generateData === 'function') {
+            window._actividadVectorialData = generateData(30);
+        }
+        // Reiniciar inputs y gráficas
+        if (typeof mseChart !== 'undefined') {
+            mseChart.data.labels = [];
+            mseChart.data.datasets[0].data = [];
+            mseChart.update();
+        }
+        document.getElementById('resultado-numerico').style.display = 'none';
+        document.getElementById('report-section') && (document.getElementById('report-section').style.display = 'none');
     });
     updateActivationSuggestion();
 });
@@ -175,7 +185,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let mseChart;
 
     // Datos
-    const data = generateData(30);
+    window._actividadVectorialData = generateData(30);
+    const data = window._actividadVectorialData;
 
     // Inicializa gráfica de MSE
     mseChart = new Chart(mseChartCtx, {
@@ -213,7 +224,9 @@ document.addEventListener('DOMContentLoaded', () => {
         mseChart.data.datasets[0].data = [];
         mseChart.update();
         // Entrena
-        let history = await trainModel(data, W1, b1, W2, b2v, lr, epochs, (epoch, y_pred, loss) => {
+        // Usa los datos actuales según la función seleccionada
+        const dataActual = window._actividadVectorialData || data;
+        let history = await trainModel(dataActual, W1, b1, W2, b2v, lr, epochs, (epoch, y_pred, loss) => {
             mseChart.data.labels.push(epoch);
             mseChart.data.datasets[0].data.push(loss);
             mseChart.update();
@@ -223,9 +236,9 @@ document.addEventListener('DOMContentLoaded', () => {
         reportBtn.disabled = false;
         trainBtn.disabled = false;
         // Guardar x1, x2, y real y predicho para el reporte (sin usar ninguna gráfica)
-        const y_pred_final = nnPredict(data.x1, data.x2, W1, b1, W2, b2v, activation);
-        const realArr = data.x1.map((xi, i) => ({ x1: data.x1[i], x2: data.x2[i], y: data.y[i] }));
-        const predArr = y_pred_final.map((yp, i) => ({ x1: data.x1[i], x2: data.x2[i], y: yp }));
+        const y_pred_final = nnPredict(dataActual.x1, dataActual.x2, W1, b1, W2, b2v, activation);
+        const realArr = dataActual.x1.map((xi, i) => ({ x1: dataActual.x1[i], x2: dataActual.x2[i], y: dataActual.y[i] }));
+        const predArr = y_pred_final.map((yp, i) => ({ x1: dataActual.x1[i], x2: dataActual.x2[i], y: yp }));
         window._actividadVectorialReporte = {
             W1: JSON.parse(JSON.stringify(W1)),
             b1: [...b1],
@@ -237,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
             real: realArr
         };
         // Mostrar resultados numéricos
-        const lucroRealProm = data.y.reduce((a, b) => a + b, 0) / data.y.length;
+        const lucroRealProm = dataActual.y.reduce((a, b) => a + b, 0) / dataActual.y.length;
         const lucroPredProm = y_pred_final.reduce((a, b) => a + b, 0) / y_pred_final.length;
         let resumen = `<b>Lucro real promedio:</b> ${lucroRealProm.toFixed(2)}<br>` +
                       `<b>Lucro predicho promedio:</b> ${lucroPredProm.toFixed(2)}<br>` +
