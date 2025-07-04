@@ -359,7 +359,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, activation, weightRange);
 
         // Habilita reporte
-        window._checkReportBtn && window._checkReportBtn();
+        //window._checkReportBtn && window._checkReportBtn(); // Restaurado a versión anterior
         trainBtn.disabled = false;
         // Guardar x1, x2, y real y predicho para el reporte (sin usar ninguna gráfica)
         const y_pred_final = nnPredict(dataActual.x1, dataActual.x2, W1, b1, W2, b2v, activation);
@@ -422,7 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tabla += `</table>`;
         document.getElementById('resumen-numerico').innerHTML = resumen + tabla;
         document.getElementById('resultado-numerico').style.display = '';
-        marcarEntrenado();
+        //marcarEntrenado(); // Deshabilitado para restaurar comportamiento anterior
     });
 
     // Reporte (placeholder, PDF en siguiente etapa)
