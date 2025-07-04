@@ -207,7 +207,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Control de nombre y habilitación de PDF
     const studentNameInput = document.getElementById('studentName');
-    const reportBtn = document.getElementById('report-btn');
     let entrenado = false;
     function isNameValid(name) {
         return name && name.trim().split(' ').length >= 2;
