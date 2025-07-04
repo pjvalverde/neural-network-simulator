@@ -3,9 +3,35 @@
 
 // --- Parámetros de la función real ---
 function realFunction(x1, x2) {
-    // Ejemplo: lucro = 2*x1 + 3*x2 + 1
+    if (window._realFunctionType === 'cuadratica') {
+        // Ejemplo cuadrático: y = x1^2 + 2*x2 + 1
+        return x1 * x1 + 2 * x2 + 1;
+    }
+    // Por defecto: lineal
     return 2 * x1 + 3 * x2 + 1;
 }
+
+// Control dinámico de función real y sugerencia
+function updateActivationSuggestion() {
+    const select = document.getElementById('realFunctionSelect');
+    const suggestion = document.getElementById('activationSuggestion');
+    if (select.value === 'cuadratica') {
+        suggestion.innerHTML = '<b>Sugerencia:</b> Para la función cuadrática, prueba ReLU. Para la lineal, usa activación lineal.';
+    } else {
+        suggestion.innerHTML = '<b>Sugerencia:</b> Para la función lineal, usa activación lineal. Para la cuadrática, prueba ReLU.';
+    }
+}
+document.addEventListener('DOMContentLoaded', () => {
+    window._realFunctionType = 'lineal';
+    const realFunctionSelect = document.getElementById('realFunctionSelect');
+    realFunctionSelect.addEventListener('change', () => {
+        window._realFunctionType = realFunctionSelect.value;
+        updateActivationSuggestion();
+        // Regenerar datos nuevos con la función seleccionada
+        // (opcional: puedes recargar la página o regenerar datos aquí)
+    });
+    updateActivationSuggestion();
+});
 
 // --- Utilidades ---
 function relu(x) {
