@@ -53,6 +53,21 @@
                   <b>Tip:</b> Usa tasas pequeñas (0.001 a 0.05). Si la tasa es muy alta, la red puede explotar y los pesos se vuelven enormes. ¡Prueba varias y observa el MSE!
                 </div>
             </div>
+            <div class="input-group">
+                <label for="epochs">Épocas de entrenamiento</label>
+                <input type="number" id="epochs" min="10" max="2000" step="10" value="120" style="width:90px;">
+            </div>
+            <div class="input-group">
+                <label for="weightRange">Rango de pesos/bias</label>
+                <select id="weightRange">
+                  <option value="100">[-100, 100]</option>
+                  <option value="500">[-500, 500]</option>
+                  <option value="1000">[-1000, 1000]</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label><input type="checkbox" id="linearActivation"> Activación lineal (sin ReLU)</label>
+            </div>
         </div>
         <div class="button-row">
             <button id="train-btn">Entrenar Red</button>

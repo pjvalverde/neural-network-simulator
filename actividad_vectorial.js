@@ -34,17 +34,17 @@ function generateData(n = 30) {
 }
 
 // --- Red neuronal con capa oculta (2 neuronas ocultas, 1 salida) ---
-function nnPredict(x1, x2, W1, b1, W2, b2) {
+function nnPredict(x1, x2, W1, b1, W2, b2, activation) {
     // x1, x2: arrays (N)
     // W1: 2x2, b1: 2x1, W2: 1x2, b2: escalar
     let y_pred = [];
     for (let i = 0; i < x1.length; i++) {
         // Entrada
         let x = [x1[i], x2[i]]; // (2,)
-        // Capa oculta: h = relu(W1·x + b1)
+        // Capa oculta: h = activation(W1·x + b1)
         let h = [0, 0];
         for (let j = 0; j < 2; j++) {
-            h[j] = relu(W1[j][0]*x[0] + W1[j][1]*x[1] + b1[j]);
+            h[j] = activation(W1[j][0]*x[0] + W1[j][1]*x[1] + b1[j]);
         }
         // Salida: y_pred = W2·h + b2
         let y = W2[0]*h[0] + W2[1]*h[1] + b2;
@@ -54,12 +54,12 @@ function nnPredict(x1, x2, W1, b1, W2, b2) {
 }
 
 // --- Entrenamiento por descenso de gradiente (capa oculta) ---
-async function trainModel(data, W1, b1, W2, b2, lr, epochs, onUpdate) {
+async function trainModel(data, W1, b1, W2, b2, lr, epochs, onUpdate, activation, weightRange) {
     let { x1, x2, y } = data;
     let history = { mse: [], W1: [], b1: [], W2: [], b2: [] };
     for (let epoch = 0; epoch < epochs; epoch++) {
         // Forward
-        let y_pred = nnPredict(x1, x2, W1, b1, W2, b2);
+        let y_pred = nnPredict(x1, x2, W1, b1, W2, b2, activation);
         let loss = mse(y, y_pred);
         history.mse.push(loss);
         history.W1.push(JSON.parse(JSON.stringify(W1)));
@@ -106,8 +106,8 @@ async function trainModel(data, W1, b1, W2, b2, lr, epochs, onUpdate) {
             for (let k = 0; k < 2; k++) {
                 W1[j][k] -= lr * dW1[j][k];
                 // Limitar W1
-                if (W1[j][k] > 100) W1[j][k] = 100;
-                if (W1[j][k] < -100) W1[j][k] = -100;
+                if (W1[j][k] > weightRange) W1[j][k] = weightRange;
+                if (W1[j][k] < -weightRange) W1[j][k] = -weightRange;
             }
             // Limitar b1
             if (b1[j] > 100) b1[j] = 100;
@@ -173,7 +173,14 @@ document.addEventListener('DOMContentLoaded', () => {
         let lr = parseFloat(lrInput.value);
         // Limitar a los valores permitidos
         if (![0.001, 0.005, 0.01, 0.05].includes(lr)) lr = 0.05;
-        let epochs = 120;
+        // Leer epochs
+        let epochs = parseInt(document.getElementById('epochs').value) || 120;
+        // Leer rango de pesos
+        let weightRange = parseInt(document.getElementById('weightRange').value) || 100;
+        // Leer activación lineal
+        let linearActivation = document.getElementById('linearActivation').checked;
+        // Definir función de activación
+        function activation(x) { return linearActivation ? x : relu(x); }
         // Inicializa solo la gráfica de MSE y oculta el resumen numérico
         document.getElementById('resultado-numerico').style.display = 'none';
         mseChart.data.labels = [];
@@ -181,16 +188,16 @@ document.addEventListener('DOMContentLoaded', () => {
         mseChart.update();
         // Entrena
         let history = await trainModel(data, W1, b1, W2, b2v, lr, epochs, (epoch, y_pred, loss) => {
-            // Solo actualiza MSE
             mseChart.data.labels.push(epoch);
             mseChart.data.datasets[0].data.push(loss);
             mseChart.update();
-        });
+        }, activation, weightRange);
+
         // Habilita reporte
         reportBtn.disabled = false;
         trainBtn.disabled = false;
         // Guardar x1, x2, y real y predicho para el reporte (sin usar ninguna gráfica)
-        const y_pred_final = nnPredict(data.x1, data.x2, W1, b1, W2, b2v);
+        const y_pred_final = nnPredict(data.x1, data.x2, W1, b1, W2, b2v, activation);
         const realArr = data.x1.map((xi, i) => ({ x1: data.x1[i], x2: data.x2[i], y: data.y[i] }));
         const predArr = y_pred_final.map((yp, i) => ({ x1: data.x1[i], x2: data.x2[i], y: yp }));
         window._actividadVectorialReporte = {
@@ -215,7 +222,21 @@ document.addEventListener('DOMContentLoaded', () => {
                       `b2: ${b2v.toFixed(2)}<br>` +
                       `<b>Epochs usados:</b> ${epochs}<br>` +
                       `<b>MSE final:</b> ${history.mse[history.mse.length-1].toFixed(4)}`;
-        document.getElementById('resumen-numerico').innerHTML = resumen;
+        // Tabla comparativa de los primeros 10 valores
+        let tabla = `<br><b>Comparación de las primeras 10 muestras:</b>`;
+        tabla += `<table style='border-collapse:collapse;margin-top:8px;font-size:0.97em;'>`;
+        tabla += `<tr style='background:#f7fafc;'><th style='border:1px solid #ccc;padding:3px;'>Índice</th><th style='border:1px solid #ccc;padding:3px;'>x₁</th><th style='border:1px solid #ccc;padding:3px;'>x₂</th><th style='border:1px solid #ccc;padding:3px;'>Lucro real</th><th style='border:1px solid #ccc;padding:3px;'>Lucro predicho</th></tr>`;
+        for (let i = 0; i < Math.min(10, data.x1.length); i++) {
+            tabla += `<tr>`;
+            tabla += `<td style='border:1px solid #ccc;padding:3px;'>${i}</td>`;
+            tabla += `<td style='border:1px solid #ccc;padding:3px;'>${data.x1[i]}</td>`;
+            tabla += `<td style='border:1px solid #ccc;padding:3px;'>${data.x2[i]}</td>`;
+            tabla += `<td style='border:1px solid #ccc;padding:3px;'>${data.y[i].toFixed(2)}</td>`;
+            tabla += `<td style='border:1px solid #ccc;padding:3px;'>${y_pred_final[i].toFixed(2)}</td>`;
+            tabla += `</tr>`;
+        }
+        tabla += `</table>`;
+        document.getElementById('resumen-numerico').innerHTML = resumen + tabla;
         document.getElementById('resultado-numerico').style.display = '';
     });
 
