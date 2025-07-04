@@ -213,12 +213,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     function checkReportBtn() {
         const name = studentNameInput.value.trim();
-        window._studentNameValid = isNameValid(name);
-        // Solo se habilita si nombre válido Y hay entrenamiento
-        reportBtn.disabled = !(window._studentNameValid && window._actividadVectorialReporte);
+        reportBtn.disabled = !(isNameValid(name) && window._actividadVectorialReporte);
     }
     studentNameInput.addEventListener('input', () => {
-        window._studentName = studentNameInput.value.trim();
         checkReportBtn();
     });
     // Actualiza al entrenar
