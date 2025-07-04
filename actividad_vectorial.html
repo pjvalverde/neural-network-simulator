@@ -31,6 +31,8 @@
                 <select id="realFunctionSelect">
                   <option value="lineal" selected>Lineal (y = 2x₁ + 3x₂ + 1)</option>
                   <option value="cuadratica">Cuadrática (y = x₁² + 2x₂ + 1)</option>
+                  <option value="cuadratica2">Cuadrática simétrica (y = x₁² - x₂² + 1)</option>
+                  <option value="senoidal">Senoidal (y = sin(x₁) + x₂)</option>
                 </select>
                 <div id="activationSuggestion" style="font-size:0.97em;color:#555;margin-top:4px;">
                   <b>Sugerencia:</b> Para la función lineal, usa activación lineal. Para la cuadrática, prueba ReLU.
@@ -76,7 +78,12 @@
                 </select>
             </div>
             <div class="input-group">
-                <label><input type="checkbox" id="linearActivation"> Activación lineal (sin ReLU)</label>
+                <label for="activationSelect">Función de activación</label>
+                <select id="activationSelect">
+                  <option value="lineal" selected>Lineal (sin activación)</option>
+                  <option value="relu">ReLU</option>
+                  <option value="tanh">tanh</option>
+                </select>
             </div>
         </div>
         <div class="button-row">

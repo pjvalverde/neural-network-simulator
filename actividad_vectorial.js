@@ -3,23 +3,41 @@
 
 // --- Parámetros de la función real ---
 function realFunction(x1, x2) {
-    if (window._realFunctionType === 'cuadratica') {
-        // Ejemplo cuadrático: y = x1^2 + 2*x2 + 1
-        return x1 * x1 + 2 * x2 + 1;
+    switch(window._realFunctionType) {
+        case 'cuadratica':
+            return x1 * x1 + 2 * x2 + 1;
+        case 'cuadratica2':
+            return x1 * x1 - x2 * x2 + 1;
+        case 'senoidal':
+            return Math.sin(x1) + x2;
+        case 'lineal':
+        default:
+            return 2 * x1 + 3 * x2 + 1;
     }
-    // Por defecto: lineal
-    return 2 * x1 + 3 * x2 + 1;
 }
 
 // Control dinámico de función real y sugerencia
 function updateActivationSuggestion() {
     const select = document.getElementById('realFunctionSelect');
     const suggestion = document.getElementById('activationSuggestion');
-    if (select.value === 'cuadratica') {
-        suggestion.innerHTML = '<b>Sugerencia:</b> Para la función cuadrática, prueba ReLU. Para la lineal, usa activación lineal.';
-    } else {
-        suggestion.innerHTML = '<b>Sugerencia:</b> Para la función lineal, usa activación lineal. Para la cuadrática, prueba ReLU.';
+    let msg = '';
+    switch(select.value) {
+        case 'lineal':
+            msg = '<b>Sugerencia:</b> Usa activación lineal.';
+            break;
+        case 'cuadratica':
+            msg = '<b>Sugerencia:</b> Prueba ReLU o tanh.';
+            break;
+        case 'cuadratica2':
+            msg = '<b>Sugerencia:</b> Prueba tanh para funciones simétricas.';
+            break;
+        case 'senoidal':
+            msg = '<b>Sugerencia:</b> Prueba tanh para funciones senoidales.';
+            break;
+        default:
+            msg = '<b>Sugerencia:</b> Elige la activación según la función real.';
     }
+    suggestion.innerHTML = msg;
 }
 document.addEventListener('DOMContentLoaded', () => {
     window._realFunctionType = 'lineal';
@@ -46,6 +64,9 @@ document.addEventListener('DOMContentLoaded', () => {
 // --- Utilidades ---
 function relu(x) {
     return Math.max(0, x);
+}
+function tanh(x) {
+    return Math.tanh(x);
 }
 
 function mse(y_true, y_pred) {
@@ -214,10 +235,14 @@ document.addEventListener('DOMContentLoaded', () => {
         let epochs = parseInt(document.getElementById('epochs').value) || 120;
         // Leer rango de pesos
         let weightRange = parseInt(document.getElementById('weightRange').value) || 100;
-        // Leer activación lineal
-        let linearActivation = document.getElementById('linearActivation').checked;
-        // Definir función de activación
-        function activation(x) { return linearActivation ? x : relu(x); }
+        // Leer función de activación
+        let activationType = document.getElementById('activationSelect').value;
+        function activation(x) {
+            if (activationType === 'lineal') return x;
+            if (activationType === 'relu') return relu(x);
+            if (activationType === 'tanh') return tanh(x);
+            return x;
+        }
         // Inicializa solo la gráfica de MSE y oculta el resumen numérico
         document.getElementById('resultado-numerico').style.display = 'none';
         mseChart.data.labels = [];
