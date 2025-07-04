@@ -207,7 +207,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Control de nombre y habilitación de PDF
     const studentNameInput = document.getElementById('studentName');
-    window._studentNameValid = false;
+    const reportBtn = document.getElementById('report-btn');
+    let entrenado = false;
+    function isNameValid(name) {
+        return name && name.trim().split(' ').length >= 2;
+    }
+    function checkBtn() {
+        reportBtn.disabled = !(isNameValid(studentNameInput.value) && entrenado);
+    }
+    studentNameInput.addEventListener('input', checkBtn);
+    // Llama a esto justo después de entrenar
+    function marcarEntrenado() {
+        entrenado = true;
+        checkBtn();
+    }
+    // Asegúrate de llamar a marcarEntrenado() al final del entrenamiento exitoso
     function isNameValid(name) {
         return name && name.trim().split(' ').length >= 2;
     }
