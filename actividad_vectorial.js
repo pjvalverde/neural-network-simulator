@@ -211,38 +211,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function isNameValid(name) {
         return name && name.trim().split(' ').length >= 2;
     }
-    const nameSubmitBtn = document.getElementById('name-submit-btn');
-    reportBtn.style.display = 'none';
-    function enableNameInput(enable) {
-        studentNameInput.disabled = !enable;
-        nameSubmitBtn.disabled = !enable;
-    }
-    function showReportBtn() {
-        reportBtn.style.display = 'inline-block';
-        checkReportBtn();
-    }
     function checkReportBtn() {
-        reportBtn.disabled = !window._actividadVectorialReporte;
-    }
-    // Al presionar Enter en el input
-    studentNameInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-            nameSubmitBtn.click();
-        }
-    });
-    nameSubmitBtn.addEventListener('click', function() {
         const name = studentNameInput.value.trim();
-        if (!isNameValid(name)) {
-            alert('Por favor ingresa tu nombre y apellido.');
-            return;
-        }
-        window._studentName = name;
-        enableNameInput(false);
-        showReportBtn();
+        reportBtn.disabled = !(isNameValid(name) && window._actividadVectorialReporte);
+    }
+    studentNameInput.addEventListener('input', () => {
+        checkReportBtn();
     });
     // Llama también tras entrenar
     window._checkReportBtn = checkReportBtn;
-
+    checkReportBtn();
 
     // Generación de PDF
     reportBtn.addEventListener('click', function() {
