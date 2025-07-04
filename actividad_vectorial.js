@@ -422,6 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tabla += `</table>`;
         document.getElementById('resumen-numerico').innerHTML = resumen + tabla;
         document.getElementById('resultado-numerico').style.display = '';
+        marcarEntrenado();
     });
 
     // Reporte (placeholder, PDF en siguiente etapa)
