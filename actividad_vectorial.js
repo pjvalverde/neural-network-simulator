@@ -208,12 +208,84 @@ document.addEventListener('DOMContentLoaded', () => {
     // Control de nombre y habilitación de PDF
     const studentNameInput = document.getElementById('studentName');
     window._studentNameValid = false;
-    studentNameInput.addEventListener('input', () => {
+    function isNameValid(name) {
+        return name && name.trim().split(' ').length >= 2;
+    }
+    function checkReportBtn() {
         const name = studentNameInput.value.trim();
-        // Nombre válido: al menos dos palabras
-        window._studentNameValid = name.split(' ').length >= 2;
+        window._studentNameValid = isNameValid(name);
         reportBtn.disabled = !window._studentNameValid || !window._actividadVectorialReporte;
-        window._studentName = name;
+    }
+    studentNameInput.addEventListener('input', () => {
+        window._studentName = studentNameInput.value.trim();
+        checkReportBtn();
+    });
+    // Actualiza al entrenar
+    window._checkReportBtn = checkReportBtn;
+    checkReportBtn();
+
+    // Generación de PDF
+    reportBtn.addEventListener('click', function() {
+        const name = studentNameInput.value.trim();
+        if (!isNameValid(name)) {
+            alert('Por favor ingresa tu nombre y apellido antes de generar el PDF.');
+            return;
+        }
+        if (!window._actividadVectorialReporte) {
+            alert('Primero debes entrenar la red para generar el reporte.');
+            return;
+        }
+        const r = window._actividadVectorialReporte;
+        // jsPDF
+        const doc = (window.jspdf && window.jspdf.jsPDF) ? new window.jspdf.jsPDF() : (window.jsPDF ? new window.jsPDF() : null);
+        if (!doc) {
+            alert('jsPDF no está cargado.');
+            return;
+        }
+        let y = 14;
+        doc.setFontSize(14);
+        doc.text('Reporte de Simulación de Red Neuronal', 14, y);
+        y += 10;
+        doc.setFontSize(11);
+        doc.text('Nombre: ' + (r.nombre || name), 14, y);
+        y += 8;
+        doc.text('Función real: ' + (r.funcionReal || ''), 14, y);
+        y += 8;
+        doc.text('Función de activación: ' + (r.activacion || ''), 14, y);
+        y += 8;
+        doc.text('Explicación:', 14, y);
+        y += 6;
+        doc.setFontSize(10);
+        doc.text(doc.splitTextToSize(r.explicacion || '', 180), 14, y);
+        y += 14;
+        doc.setFontSize(11);
+        doc.text('Resumen numérico:', 14, y);
+        y += 7;
+        doc.setFontSize(10);
+        doc.text('MSE final: ' + (r.mse ? r.mse.toFixed(4) : ''), 14, y);
+        y += 6;
+        doc.text('Pesos finales W1: ' + JSON.stringify(r.W1), 14, y);
+        y += 6;
+        doc.text('Bias finales b1: ' + JSON.stringify(r.b1), 14, y);
+        y += 6;
+        doc.text('Pesos finales W2: ' + JSON.stringify(r.W2), 14, y);
+        y += 6;
+        doc.text('Bias final b2: ' + JSON.stringify(r.b2), 14, y);
+        y += 8;
+        doc.setFontSize(11);
+        doc.text('Comparación de las primeras 10 muestras:', 14, y);
+        y += 7;
+        doc.setFontSize(9);
+        doc.text('i   x1   x2   Real   Predicho', 14, y);
+        y += 5;
+        for (let i = 0; i < 10 && i < r.real.length; i++) {
+            const real = r.real[i];
+            const pred = r.pred[i];
+            doc.text(`${i}   ${real.x1}   ${real.x2}   ${real.y.toFixed(2)}   ${pred.y.toFixed(2)}`, 14, y);
+            y += 5;
+            if (y > 270) { doc.addPage(); y = 14; }
+        }
+        doc.save('reporte_red_neuronal.pdf');
     });
 
     // Habilita el botón de PDF solo si hay reporte y nombre válido
