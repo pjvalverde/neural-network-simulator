@@ -174,17 +174,18 @@ document.addEventListener('DOMContentLoaded', () => {
         let b2v = parseFloat(b2.value);
         let lr = parseFloat(lrInput.value);
         let epochs = 120;
-        // Gráfica real
-        profitChart.data.datasets[0].data = data.x1.map((x, i) => ({ x: x, y: data.y[i] }));
+        // Gráfica real (eje X = índice de muestra)
+        profitChart.data.datasets[0].data = data.y.map((y, i) => ({ x: i, y: y }));
         profitChart.data.datasets[1].data = [];
+        profitChart.options.scales.x.title.text = 'Índice de muestra';
         profitChart.update();
         mseChart.data.labels = [];
         mseChart.data.datasets[0].data = [];
         mseChart.update();
         // Entrena
         let history = await trainModel(data, W1, b1, W2, b2v, lr, epochs, (epoch, y_pred, loss) => {
-            // Actualiza predicción
-            profitChart.data.datasets[1].data = data.x1.map((x, i) => ({ x: x, y: y_pred[i] }));
+            // Actualiza predicción (eje X = índice de muestra)
+            profitChart.data.datasets[1].data = y_pred.map((y, i) => ({ x: i, y: y }));
             profitChart.update();
             // Actualiza MSE
             mseChart.data.labels.push(epoch);
@@ -195,6 +196,9 @@ document.addEventListener('DOMContentLoaded', () => {
         reportBtn.disabled = false;
         trainBtn.disabled = false;
         // Guarda datos para reporte
+        // Guardar x1, x2, y real y predicho para el reporte
+        const realArr = data.x1.map((xi, i) => ({ x1: data.x1[i], x2: data.x2[i], y: data.y[i] }));
+        const predArr = y_pred.map((yp, i) => ({ x1: data.x1[i], x2: data.x2[i], y: yp }));
         window._actividadVectorialReporte = {
             W1: JSON.parse(JSON.stringify(W1)),
             b1: [...b1],
@@ -202,8 +206,8 @@ document.addEventListener('DOMContentLoaded', () => {
             b2: b2v,
             lr: lrInput.value,
             mse: history.mse[history.mse.length-1],
-            pred: profitChart.data.datasets[1].data,
-            real: profitChart.data.datasets[0].data
+            pred: predArr,
+            real: realArr
         };
     });
 
@@ -219,6 +223,22 @@ document.addEventListener('DOMContentLoaded', () => {
                    `<b>b2 (bias salida):</b> ${rep.b2.toFixed(2)}<br>` +
                    `<b>Tasa de aprendizaje:</b> ${rep.lr}<br>` +
                    `<b>MSE final:</b> ${rep.mse.toFixed(4)}<br>`;
+        // Tabla comparativa de las primeras 10 muestras
+        if (rep.real && rep.pred && rep.real.length > 0 && rep.pred.length > 0) {
+            html += `<br><b>Comparación de las primeras 10 muestras:</b>`;
+            html += `<table style='border-collapse:collapse;margin-top:8px;font-size:0.97em;'>`;
+            html += `<tr style='background:#f7fafc;'><th style='border:1px solid #ccc;padding:3px;'>Índice</th><th style='border:1px solid #ccc;padding:3px;'>x₁</th><th style='border:1px solid #ccc;padding:3px;'>x₂</th><th style='border:1px solid #ccc;padding:3px;'>Lucro real</th><th style='border:1px solid #ccc;padding:3px;'>Lucro predicho</th></tr>`;
+            for (let i = 0; i < Math.min(10, rep.real.length); i++) {
+                html += `<tr>`;
+                html += `<td style='border:1px solid #ccc;padding:3px;'>${i}</td>`;
+                html += `<td style='border:1px solid #ccc;padding:3px;'>${rep.real[i].x1 !== undefined ? rep.real[i].x1 : '-'}</td>`;
+                html += `<td style='border:1px solid #ccc;padding:3px;'>${rep.real[i].x2 !== undefined ? rep.real[i].x2 : '-'}</td>`;
+                html += `<td style='border:1px solid #ccc;padding:3px;'>${rep.real[i].y.toFixed(2)}</td>`;
+                html += `<td style='border:1px solid #ccc;padding:3px;'>${rep.pred[i].y.toFixed(2)}</td>`;
+                html += `</tr>`;
+            }
+            html += `</table>`;
+        }
         document.getElementById('report-summary').innerHTML = html;
         document.getElementById('report-section').style.display = '';
     });
