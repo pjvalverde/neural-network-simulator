@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         // Mostrar resultados numéricos
         const lucroRealProm = data.y.reduce((a, b) => a + b, 0) / data.y.length;
-        const lucroPredProm = history.W2[history.W2.length-1].reduce((a, b) => a + b, 0) / history.W2[history.W2.length-1].length;
+        const lucroPredProm = y_pred_final.reduce((a, b) => a + b, 0) / y_pred_final.length;
         let resumen = `<b>Lucro real promedio:</b> ${lucroRealProm.toFixed(2)}<br>` +
                       `<b>Lucro predicho promedio:</b> ${lucroPredProm.toFixed(2)}<br>` +
                       `<b>Pesos y bias finales:</b><br>` +
