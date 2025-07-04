@@ -359,7 +359,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, activation, weightRange);
 
         // Habilita reporte
-        //window._checkReportBtn && window._checkReportBtn(); // Restaurado a versión anterior
+        marcarEntrenado(); // Habilita el botón PDF si el nombre ya fue ingresado
         trainBtn.disabled = false;
         // Guardar x1, x2, y real y predicho para el reporte (sin usar ninguna gráfica)
         const y_pred_final = nnPredict(dataActual.x1, dataActual.x2, W1, b1, W2, b2v, activation);
