@@ -211,18 +211,37 @@ document.addEventListener('DOMContentLoaded', () => {
     function isNameValid(name) {
         return name && name.trim().split(' ').length >= 2;
     }
-    function checkReportBtn() {
-        const name = studentNameInput.value.trim();
-        window._studentNameValid = isNameValid(name);
-        reportBtn.disabled = !window._studentNameValid || !window._actividadVectorialReporte;
+    const nameSubmitBtn = document.getElementById('name-submit-btn');
+    reportBtn.style.display = 'none';
+    function enableNameInput(enable) {
+        studentNameInput.disabled = !enable;
+        nameSubmitBtn.disabled = !enable;
     }
-    studentNameInput.addEventListener('input', () => {
-        window._studentName = studentNameInput.value.trim();
+    function showReportBtn() {
+        reportBtn.style.display = 'inline-block';
         checkReportBtn();
+    }
+    function checkReportBtn() {
+        reportBtn.disabled = !window._actividadVectorialReporte;
+    }
+    // Al presionar Enter en el input
+    studentNameInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            nameSubmitBtn.click();
+        }
+    });
+    nameSubmitBtn.addEventListener('click', function() {
+        const name = studentNameInput.value.trim();
+        if (!isNameValid(name)) {
+            alert('Por favor ingresa tu nombre y apellido.');
+            return;
+        }
+        window._studentName = name;
+        enableNameInput(false);
+        showReportBtn();
     });
     // Actualiza al entrenar
     window._checkReportBtn = checkReportBtn;
-    checkReportBtn();
 
     // Generación de PDF
     reportBtn.addEventListener('click', function() {
