@@ -174,11 +174,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let b2v = parseFloat(b2.value);
         let lr = parseFloat(lrInput.value);
         let epochs = 120;
-        // Gráfica real (eje X = índice de muestra)
-        profitChart.data.datasets[0].data = data.y.map((y, i) => ({ x: i, y: y }));
-        profitChart.data.datasets[1].data = [];
-        profitChart.options.scales.x.title.text = 'Índice de muestra';
-        profitChart.update();
+        // Ocultar gráfica de lucro real vs predicción (ya no se usa)
+        document.getElementById('resultado-numerico').style.display = 'none';
         mseChart.data.labels = [];
         mseChart.data.datasets[0].data = [];
         mseChart.update();
@@ -195,10 +192,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Habilita reporte
         reportBtn.disabled = false;
         trainBtn.disabled = false;
-        // Guarda datos para reporte
         // Guardar x1, x2, y real y predicho para el reporte
         const realArr = data.x1.map((xi, i) => ({ x1: data.x1[i], x2: data.x2[i], y: data.y[i] }));
-        const predArr = y_pred.map((yp, i) => ({ x1: data.x1[i], x2: data.x2[i], y: yp }));
+        const predArr = history.W2[history.W2.length-1].map((yp, i) => ({ x1: data.x1[i], x2: data.x2[i], y: yp }));
         window._actividadVectorialReporte = {
             W1: JSON.parse(JSON.stringify(W1)),
             b1: [...b1],
@@ -209,6 +205,20 @@ document.addEventListener('DOMContentLoaded', () => {
             pred: predArr,
             real: realArr
         };
+        // Mostrar resultados numéricos
+        const lucroRealProm = data.y.reduce((a, b) => a + b, 0) / data.y.length;
+        const lucroPredProm = history.W2[history.W2.length-1].reduce((a, b) => a + b, 0) / history.W2[history.W2.length-1].length;
+        let resumen = `<b>Lucro real promedio:</b> ${lucroRealProm.toFixed(2)}<br>` +
+                      `<b>Lucro predicho promedio:</b> ${lucroPredProm.toFixed(2)}<br>` +
+                      `<b>Pesos y bias finales:</b><br>` +
+                      `W1: [[${W1[0][0].toFixed(2)}, ${W1[0][1].toFixed(2)}], [${W1[1][0].toFixed(2)}, ${W1[1][1].toFixed(2)}]]<br>` +
+                      `b1: [${b1[0].toFixed(2)}, ${b1[1].toFixed(2)}]<br>` +
+                      `W2: [${W2[0].toFixed(2)}, ${W2[1].toFixed(2)}]<br>` +
+                      `b2: ${b2v.toFixed(2)}<br>` +
+                      `<b>Epochs usados:</b> ${epochs}<br>` +
+                      `<b>MSE final:</b> ${history.mse[history.mse.length-1].toFixed(4)}`;
+        document.getElementById('resumen-numerico').innerHTML = resumen;
+        document.getElementById('resultado-numerico').style.display = '';
     });
 
     // Reporte (placeholder, PDF en siguiente etapa)

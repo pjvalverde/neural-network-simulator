@@ -51,12 +51,11 @@
             <button id="train-btn">Entrenar Red</button>
             <button id="report-btn" disabled>Generar Reporte PDF</button>
         </div>
+        <div id="resultado-numerico" class="chart-container" style="margin:32px auto 0 auto; max-width:700px; background:#f7fafc; border-radius:12px; padding:18px; display:none;">
+            <h3>Resultados del Entrenamiento</h3>
+            <div id="resumen-numerico"></div>
+        </div>
         <div class="charts-grid">
-            <div class="chart-container">
-                <h3>Lucro Real vs Predicción</h3>
-                <p style="font-size:0.98em; color:#444; margin-bottom:6px;">Cada punto representa una muestra (índice). El <b>índice</b> es la posición de la muestra en el conjunto de datos. Compara el lucro real (verde) y el predicho (azul) para cada ejemplo y observa si la red aprende a predecir correctamente.</p>
-                <canvas id="profitChart" width="350" height="240"></canvas>
-            </div>
             <div class="chart-container">
                 <h3>Función de Costo (MSE)</h3>
                 <canvas id="mseChart" width="350" height="240"></canvas>
