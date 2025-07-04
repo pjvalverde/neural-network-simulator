@@ -105,9 +105,21 @@ async function trainModel(data, W1, b1, W2, b2, lr, epochs, onUpdate) {
             b1[j] -= lr * db1[j];
             for (let k = 0; k < 2; k++) {
                 W1[j][k] -= lr * dW1[j][k];
+                // Limitar W1
+                if (W1[j][k] > 100) W1[j][k] = 100;
+                if (W1[j][k] < -100) W1[j][k] = -100;
             }
+            // Limitar b1
+            if (b1[j] > 100) b1[j] = 100;
+            if (b1[j] < -100) b1[j] = -100;
+            // Limitar W2
+            if (W2[j] > 100) W2[j] = 100;
+            if (W2[j] < -100) W2[j] = -100;
         }
         b2 -= lr * db2;
+        // Limitar b2
+        if (b2 > 100) b2 = 100;
+        if (b2 < -100) b2 = -100;
         // Simula animación
         await new Promise(res => setTimeout(res, 8));
     }
@@ -159,6 +171,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let W2 = [parseFloat(w2_1.value), parseFloat(w2_2.value)];
         let b2v = parseFloat(b2.value);
         let lr = parseFloat(lrInput.value);
+        // Limitar a los valores permitidos
+        if (![0.001, 0.005, 0.01, 0.05].includes(lr)) lr = 0.05;
         let epochs = 120;
         // Inicializa solo la gráfica de MSE y oculta el resumen numérico
         document.getElementById('resultado-numerico').style.display = 'none';
