@@ -86,6 +86,20 @@
                 </select>
             </div>
         </div>
+        <div class="didactic-section" style="background:#f8fafc;padding:12px 20px;border-radius:8px;margin-bottom:18px;max-width:700px;margin-left:auto;margin-right:auto;font-size:1em;">
+            <b>¿Por qué son importantes las funciones de activación?</b><br>
+            Las funciones de activación permiten que las redes neuronales aprendan relaciones <b>no lineales</b> entre entrada y salida. Si solo usas activación lineal, aunque tengas muchas capas, la red solo podrá aprender funciones lineales.<br><br>
+            <b>¿Cuándo usar cada función?</b><br>
+            <ul style="margin-left:18px;">
+                <li><b>Lineal:</b> Úsala solo si la función real es lineal (por ejemplo, y = 2x₁ + 3x₂ + 1).</li>
+                <li><b>ReLU:</b> Es útil para funciones no lineales y positivas (por ejemplo, y = x₁² + 2x₂ + 1).</li>
+                <li><b>tanh:</b> Ideal para funciones no lineales que pueden ser negativas o simétricas (por ejemplo, y = x₁² - x₂² + 1 o y = sin(x₁) + x₂).</li>
+            </ul>
+            <b>Experimenta:</b> Cambia la función real y la activación para ver cómo aprende la red. ¡No todas las combinaciones funcionan igual de bien!
+        </div>
+        <div style="text-align:center;margin-bottom:12px;">
+            <input id="studentName" type="text" placeholder="Nombre y Apellido" style="padding:6px 12px;width:240px;font-size:1em;border-radius:5px;border:1px solid #bbb;">
+        </div>
         <div class="button-row">
             <button id="train-btn">Entrenar Red</button>
             <button id="report-btn" disabled>Generar Reporte PDF</button>
@@ -107,5 +121,6 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="actividad_vectorial.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
 </html>

@@ -205,6 +205,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const mseChartCtx = document.getElementById('mseChart').getContext('2d');
     let mseChart;
 
+    // Control de nombre y habilitación de PDF
+    const studentNameInput = document.getElementById('studentName');
+    window._studentNameValid = false;
+    studentNameInput.addEventListener('input', () => {
+        const name = studentNameInput.value.trim();
+        // Nombre válido: al menos dos palabras
+        window._studentNameValid = name.split(' ').length >= 2;
+        reportBtn.disabled = !window._studentNameValid || !window._actividadVectorialReporte;
+        window._studentName = name;
+    });
+
+    // Habilita el botón de PDF solo si hay reporte y nombre válido
+    function checkReportBtn() {
+        reportBtn.disabled = !window._studentNameValid || !window._actividadVectorialReporte;
+    }
+    // Actualiza cada vez que se entrena
+    window._checkReportBtn = checkReportBtn;
+
     // Datos
     window._actividadVectorialData = generateData(30);
     const data = window._actividadVectorialData;
@@ -258,13 +276,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }, activation, weightRange);
 
         // Habilita reporte
-        reportBtn.disabled = false;
+        window._checkReportBtn && window._checkReportBtn();
         trainBtn.disabled = false;
         // Guardar x1, x2, y real y predicho para el reporte (sin usar ninguna gráfica)
         const y_pred_final = nnPredict(dataActual.x1, dataActual.x2, W1, b1, W2, b2v, activation);
         const realArr = dataActual.x1.map((xi, i) => ({ x1: dataActual.x1[i], x2: dataActual.x2[i], y: dataActual.y[i] }));
         const predArr = y_pred_final.map((yp, i) => ({ x1: dataActual.x1[i], x2: dataActual.x2[i], y: yp }));
+        // Explicación didáctica según función y activación
+        let explicacion = '';
+        if (window._realFunctionType === 'lineal' && activationType === 'lineal') {
+            explicacion = 'La función real es lineal y la activación también. La red puede aprender perfectamente.';
+        } else if (window._realFunctionType === 'lineal') {
+            explicacion = 'La función real es lineal, pero se usó una activación no lineal. Aun así, la red puede aproximar, pero no es necesario.';
+        } else if ((window._realFunctionType === 'cuadratica' || window._realFunctionType === 'cuadratica2') && activationType === 'tanh') {
+            explicacion = 'La función real es no lineal y simétrica. La activación tanh permite a la red aprender relaciones no lineales y negativas.';
+        } else if ((window._realFunctionType === 'cuadratica' || window._realFunctionType === 'cuadratica2') && activationType === 'relu') {
+            explicacion = 'La función real es no lineal. ReLU ayuda a aprender funciones no lineales positivas, pero puede limitar la simetría.';
+        } else if (window._realFunctionType === 'senoidal' && activationType === 'tanh') {
+            explicacion = 'La función real es senoidal. La activación tanh es ideal para aprender funciones suaves y oscilatorias.';
+        } else {
+            explicacion = 'La combinación de función real y activación seleccionada puede afectar la capacidad de la red para aprender. Experimenta distintas combinaciones.';
+        }
         window._actividadVectorialReporte = {
+            nombre: window._studentName || '',
+            funcionReal: document.getElementById('realFunctionSelect').selectedOptions[0].text,
+            activacion: document.getElementById('activationSelect').selectedOptions[0].text,
+            explicacion: explicacion,
             W1: JSON.parse(JSON.stringify(W1)),
             b1: [...b1],
             W2: [...W2],
